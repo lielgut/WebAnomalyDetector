@@ -1,0 +1,60 @@
+/* Designing all grid */
+.grid-container {
+  display: grid;
+  background-color: blue;
+  padding: 5px;
+  grid-template-columns: 800px 1fr 1fr;
+  grid-template-rows: 500px 1fr 100px;
+}
+/* Designing all grid-items */
+.Model {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid black;
+  padding: 30px;
+  font-size: 30px;
+  text-align: center;
+  grid-column-start: 3;
+  grid-column-end: 5;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+
+.Graph {
+  background-color: rgba(545, 455, 444, 0.8);
+  border: 1px solid black;
+  padding: 20px;
+  font-size: 30px;
+  text-align: center;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+.Table {
+  background-color: rgba(545, 455, 444, 0.8);
+  border: 1px solid black;
+  padding: 20px;
+  font-size: 30px;
+  text-align: center;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 2;
+  grid-row-end: 5;
+}
+.DropOff {
+  background-color: rgba(545, 455, 444, 0.8);
+  border: 5px solid black;
+  padding: 50px;
+  font-size: 30px;
+  text-align: center;
+  grid-column-start: 3;
+  grid-column-end: 3;
+  grid-row-start: 4;
+  grid-row-end: 4;
+} 
+  
+        /* Designing h1 element */
+h1 {
+  color: Blue;
+  text-align: center;
+}
