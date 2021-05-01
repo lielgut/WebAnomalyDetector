@@ -1,28 +1,5 @@
 // based on Dr. Eliahu Khalastchi's C++ code
 
-class Line {
-    constructor(a, b) {
-        if(a == undefined)
-            this.a = 0;
-        else
-            this.a = a;
-        if(b == undefined)
-            this.b = 0;
-        else
-            this.b = b;
-    }
-    f(x) {
-        return this.a * x + this.b;
-    }
-}
-
-class Point {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-}
-
 function avg(values) {
     let sum = 0;
     values.forEach((x) => sum += x);
@@ -56,9 +33,9 @@ function linear_reg(points) {
         x.push(pt.x);
         y.push(pt.y);
     });
-    let a = cov(x, y) / variance(x);
-    let b = avg(y) - a * avg(x);
-    return new Line(a,b);
+    let a0 = cov(x, y) / variance(x);
+    let b0 = avg(y) - a0 * avg(x);
+    return {a: a0, b: b0};
 }
 
 function dev(p, points) {
@@ -67,9 +44,13 @@ function dev(p, points) {
 }
 
 function devFromLine(p, l) {
-    return Math.abs(p.y - l.f(p.x));
+    return Math.abs(p.y - eval(l,p.x));
+}
+
+function eval(l, x) {
+    return l.a * x + l.b;
 }
 
 module.exports = {
-    Line, Point, pearson, dev, linear_reg
+    pearson, dev, linear_reg, eval
 };

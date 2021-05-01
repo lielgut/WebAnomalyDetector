@@ -1,15 +1,6 @@
 // based on Dr. Eliahu Khalastchi's C++ code
 
-const anomalyDetUtil = require("./AnomalyDetectionUtil.js");
-const Point = anomalyDetUtil.Point;
 const enclosingCircle = require('smallest-enclosing-circle');
-
-class Circle {
-    constructor(c, r) {
-        this.center = c;
-        this.radius = r;
-    }
-}
 
 function dist(a, b) {
     let x2=(a.x-b.x)*(a.x-b.x);
@@ -18,10 +9,10 @@ function dist(a, b) {
 }
 
 function from2points(a, b) {
-    let x=(a.x+b.x)/2;
-	let y=(a.y+b.y)/2;
+    let x0=(a.x+b.x)/2;
+	let y0=(a.y+b.y)/2;
 	let r=dist(a,b)/2;
-	return new Circle(new Point(x,y),r);
+	return {center:{x: x0, y: y0}, radius: r};
 }
 
 function from3Points(a, b, c){
@@ -47,19 +38,19 @@ function from3Points(a, b, c){
 	
 	*/
 	
-	let x = (- pSlopBC*mBC.x + mBC.y + pSlopAB*mAB.x - mAB.y) / (pSlopAB - pSlopBC);
-	let y = pSlopAB * (x - mAB.x) + mAB.y;
-	let center = new Point(x,y);
-	let R=dist(center,a);
+	let x0 = (- pSlopBC*mBC.x + mBC.y + pSlopAB*mAB.x - mAB.y) / (pSlopAB - pSlopBC);
+	let y0 = pSlopAB * (x - mAB.x) + mAB.y;
+	let ctr = {x: x0, y: y0};
+	let R=dist(ctr,a);
 	
-	return new Circle(center,R);	
+	return {center: ctr, radius: R};
 }
 
 function trivial(P){
 	if(P.length==0)
-		return new Circle(new Point(0,0),0);
+		return {center:{x: 0, y:0}, radius: 0};
 	else if(P.length==1)
-		return new Circle(P[0],0);
+		return {center:P[0], radius: 0};
 	else if (P.length==2)
 		return from2points(P[0],P[1]);
 
@@ -115,10 +106,10 @@ algorithm welzl
     
     function findMinCircle(points){
 		let res = enclosingCircle(points);
-		return new Circle(new Point(res.x, res.y), res.r);
+		return {center: {x: res.x, y: res.y}, radius: res.r};
         // return welzl(points,[],points.length);
     }
 
     module.exports = {
-        Circle, findMinCircle, dist
+        findMinCircle, dist
     };

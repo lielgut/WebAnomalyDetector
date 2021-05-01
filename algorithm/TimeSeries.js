@@ -3,37 +3,13 @@
 const fs = require('fs');
 
 class TimeSeries {
-    constructor(CSVfilename) {
-        this.ts = {}
-        this.atts = []
-
-        let thisTS = this;
-        let data = fs.readFileSync(CSVfilename, {encoding: 'utf8', flag:'r'});
-        let i=0;
-
-        data.split(/\r\n|\r|\n/).forEach((line) => { 
-            if(line != "") {
-                let splitted = line.split(",");   
-            if(i==0) {
-                splitted.forEach((att) => {
-                    if(att in thisTS.ts) {
-                        thisTS.ts[att + '2'] = [];
-                        thisTS.atts.push(att + '2');
-                    }
-                    else {
-                        thisTS.ts[att] = [];
-                        thisTS.atts.push(att);
-                    } 
-                });   
-            } 
-            else {
-                splitted.forEach((val, j) => {
-                    thisTS.ts[thisTS.atts[j]].push(parseFloat(val));
-                });
-            }                
-            i++;
-            }
-        });
+    constructor(data) {
+        this.ts = data;
+        this.atts = [];
+        
+        for(const att in data) {
+            this.atts.push(att);
+        }
         this.dataRowSize = this.ts[this.atts[0]].length;
     }
 
