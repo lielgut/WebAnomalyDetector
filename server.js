@@ -38,6 +38,14 @@ app.get("/", function(request, response) {
     response.sendFile(__dirname + "/index.html");
 });
 
+app.get("/style.css", function(request, response) {
+    response.sendFile(__dirname + "/style.css");
+});
+
+app.get("/index.js", function(request, response) {
+    response.sendFile(__dirname + "/index.js");
+});
+
 app.post("/api/model", function (request, response) {
 
     let data = request.body.train_data;
