@@ -1,10 +1,10 @@
- /* Designing all grid */
+/* Designing all grid */
 .grid-container {
   display: grid;
   background-color: gray;
   padding: 100px;
   grid-template-columns: 70%;
-  grid-template-rows: 300pt ;
+  grid-template-rows: 300pt 100pt 100pt ;
   grid-gap: 1em;
 }
 /* Designing all grid-items */
