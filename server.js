@@ -132,7 +132,7 @@ app.post("/api/anomaly", function (request, response) {
         if(models[model_id].status == 'ready') {
             let data = request.body.predict_data;
             let t = new TimeSeries(data);
-            response.send(JSON.stringify({anomalies: det.detect(t)}));
+            response.send(JSON.stringify({anomalies: det.detect(t), reason: '??'}));
         }
         else {
             response.redirect(303, '/api/model?model_id=' + model_id);
