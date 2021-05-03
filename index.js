@@ -1,7 +1,18 @@
+var selectedModelID;
 $.getJSON("/api/models", data => {
-    console.log(data);
     for(var i=0; i<data.length; i++) {
         let model = data[i];
-        $(".Model").append("<h3 class=\"model" + model.model_id + "\">" + model.model_id + ", " + model.status + "</h3>");
+        let id = model.model_id;
+        $("#modelTable").append("\
+        <tr id=\"div" + id + "\">\
+        <td><input type=\"radio\" id=\"" + id + "\" name=\"radiobtn\"></td>\
+        <td>" + id + "</td>\
+        <td>" + model.status + "</td>\
+        <td><button type=\"button\">X</button></td>\
+        </tr>\
+        ");
+        $("#" + id).click(() => {
+            selectedModelID = id;
+        });
     }
   });
