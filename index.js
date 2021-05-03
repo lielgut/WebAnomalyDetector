@@ -20,7 +20,7 @@ function addModel(model) {
         <tr id=\"tr" + id + "\">\
         <td><input type=\"radio\" id=\"" + id + "\" name=\"radiobtn\"></td>\
         <td>" + id + "</td>\
-        <td>" + model.status + "</td>\
+        <td id=\"status" + id + "\">" + model.status + "</td>\
         <td><button type=\"button\" id=\"delete" + id + "\">X</button></td>\
         </tr>\
         ");
@@ -44,6 +44,16 @@ $("#trainBtn").click(() => {
     let body = {train_data: data};
     $.post("/api/model",body,(response, status) => {
         // TODO check status
-
+        addModel(response);
     },"json");
+
+    let interval;
+    interval = setInterval(() => {
+        $.getJSON("/api/model", data => {
+            if(data.status == 'ready') {
+                clearInterval(interval);
+                $("#status" + data.model_id).html("ready");
+            }
+          });
+    }, 5000);
 });
