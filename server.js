@@ -13,6 +13,14 @@ const SimpleAnomalyDetector = anomDet.SimpleAnomalyDetector;
 const HybridAnomalyDetector = anomDet.HybridAnomalyDetector;
 const fs = require('fs');
 
+if(!fs.existsSync('./models/')) {
+    fs.mkdirSync('./models/');
+}
+
+if(!fs.existsSync('./detectors/')) {
+    fs.mkdirSync('./detectors/');
+}
+
 // load models and data from files
 var models = [];
 var detectors = [];
@@ -70,7 +78,6 @@ app.post("/api/model", function (request, response) {
     }
     det.learnNormal(t);
     model.status = 'ready';
-    // TODO send when learning finished
 
     let detData = {cf: det.cf, threshold: det.threshold, type: modelType};
     fs.writeFileSync('./detectors/' + id + '.json', JSON.stringify(detData), err => {
