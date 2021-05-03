@@ -1,18 +1,49 @@
 var selectedModelID;
-$.getJSON("/api/models", data => {
-    for(var i=0; i<data.length; i++) {
-        let model = data[i];
-        let id = model.model_id;
+
+function removeModel(id) {    
+    $.ajax({
+        url: '/api/model?model_id=' + id,
+        type: 'DELETE',
+        success: () => {
+            $("#tr" + id).remove();
+            alert("model " + id + " deleted succesfuly.");
+        },
+        error: () => {
+            alert("error in deleting model");
+        }
+    });
+}
+
+function addModel(model) {
+    let id = model.model_id;
         $("#modelTable").append("\
-        <tr id=\"div" + id + "\">\
+        <tr id=\"tr" + id + "\">\
         <td><input type=\"radio\" id=\"" + id + "\" name=\"radiobtn\"></td>\
         <td>" + id + "</td>\
         <td>" + model.status + "</td>\
-        <td><button type=\"button\">X</button></td>\
+        <td><button type=\"button\" id=\"delete" + id + "\">X</button></td>\
         </tr>\
         ");
         $("#" + id).click(() => {
             selectedModelID = id;
         });
+        $("#delete" + id).click(() => {
+             removeModel(id); 
+        });
+}
+
+$.getJSON("/api/models", data => {
+    for(var i=0; i<data.length; i++) {
+        addModel(data[i]);
     }
   });
+
+$("#trainBtn").click(() => {
+    // load data from csv file
+    let data;
+    let body = {train_data: data};
+    $.post("/api/model",body,(response, status) => {
+        // TODO check status
+
+    },"json");
+});
