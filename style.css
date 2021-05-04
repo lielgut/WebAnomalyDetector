@@ -1,10 +1,14 @@
-/* Designing all grid */
+.body {
+  background-color: gray;
+}
 .grid-container {
+  margin-top:0;
   display: grid;
   background-color: gray;
-  padding: 100px;
-  grid-template-columns: 70%;
-  grid-template-rows: 300pt 100pt 100pt ;
+  top:0;
+  padding: 30px;
+  grid-template-columns: 800px;
+  grid-template-rows: 500px 200px ;
   grid-gap: 1em;
 }
 /* Designing all grid-items */
@@ -41,7 +45,6 @@
 }
 .DropOff{
   background-color: rgba(545, 455, 444, 0.8);
-  padding: 50px;
   font-size: 30px;
   text-align: center;
   grid-column-start: 3;
@@ -51,7 +54,9 @@
 } 
   
         /* Designing h1 element */
-h1 {
-  background-color: gray;
+.title {
   text-align: center;
+  background-color: gray;
+  padding : 0px ;
+  font-size: 55px
 }
