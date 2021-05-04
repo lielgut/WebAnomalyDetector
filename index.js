@@ -1,7 +1,8 @@
 var selectedModelID;
 var modelType;
 var loadedFile;
-var loadedData = {};
+var loadedTrainData = {};
+var loadedDetectData = {};
 
 function removeModel(id) {  
     if(selectedModelID == id) {
@@ -38,7 +39,7 @@ function addModel(model) {
     });
 }
 
-async function readFile(file) {
+async function readFile(file, loadedData) {
     let text = await file.text();
     let data = text.split(/\r\n|\r|\n/);
     let features = data[0].split(",");
@@ -76,10 +77,10 @@ $("#trainBtn").click(() => {
         alert("no file loaded. Please upload a CSV file.");
         return;
     }
-    loadedData = {};
-    readFile(loadedFile).then(() => {
+    loadedTrainData = {};
+    readFile(loadedFile, loadedTrainData).then(() => {
 
-        let body = {train_data: loadedData};
+        let body = {train_data: loadedTrainData};
 
         $.ajax({
             url: '/api/model?model_type=' + modelType,
@@ -87,24 +88,25 @@ $("#trainBtn").click(() => {
             dataType: 'json',
             contentType: 'application/json',
             success: (model) => {
+                
                 addModel(model);
                 alert("model uploaded succesfully");
+
+                let interval;
+                interval = setInterval(() => {
+                $.getJSON("/api/model?model_id=" + model.model_id, data => {
+                if(data.status == 'ready') {
+                    clearInterval(interval);
+                    $("#status" + data.model_id).html("ready");
+                }
+                });
+        }, 5000);
             },
             error: () => {
                 alert("error in uploading model");
             },
             data: JSON.stringify(body)
         });
-
-        let interval;
-        interval = setInterval(() => {
-            $.getJSON("/api/model", data => {
-                if(data.status == 'ready') {
-                    clearInterval(interval);
-                    $("#status" + data.model_id).html("ready");
-                }
-            });
-        }, 5000);
     });
 });
 
