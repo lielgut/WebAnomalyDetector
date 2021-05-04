@@ -10,19 +10,31 @@
   <div class="title">Annomaly Detector </div>
   <div class="grid-container">
         <div class="Graph">Graph will be here</div>
-        <div class="Model">Models here</div>
+        <div class="Model">
+            <table id="modelTable">
+                <tr>
+                  <th></th>
+                  <th>id</th>
+                  <th>status</th> 
+                  <th></th>                        
+                </tr>
+            </table>  
+        </div>
         <div class="Table">Table here</div>
-        <div class="DropOff">drag here
-          <div class="Buttons">
-    <button type="button" class="btn btn-danger">
-      detect
-    </button>
-<button type="button" class="btn btn-info">
-  train
-</button>
-          </div>
-</div>
-  </div>
+        <div class="DropOff">
+
+            <label>model type:</label>
+            <input type="radio" id="regSelect" name="typeSelect">
+            <label for="regSelect">regression</label>
+            <input type="radio" id="hybridSelect" name="typeSelect">
+            <label for="hybridSelect">hybrid</label>
+            <div id="drop-area">
+                <input type="file" id="file-selector" accept=".csv">
+            </div>
+            <button type="button" class="btn btn-info" id="trainBtn">train</button>
+            <button type="button" class="btn btn-danger" id="detectBtn">detect</button>
+        </div>
+    </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="index.js" charset="utf-8"></script>
 </body>

@@ -1,6 +1,12 @@
 var selectedModelID;
+var modelType;
+var loadedFile;
+var loadedData = {};
 
-function removeModel(id) {    
+function removeModel(id) {  
+    if(selectedModelID == id) {
+        selectedModelID = undefined;  
+    }
     $.ajax({
         url: '/api/model?model_id=' + id,
         type: 'DELETE',
@@ -16,44 +22,115 @@ function removeModel(id) {
 
 function addModel(model) {
     let id = model.model_id;
-        $("#modelTable").append("\
-        <tr id=\"tr" + id + "\">\
-        <td><input type=\"radio\" id=\"" + id + "\" name=\"radiobtn\"></td>\
-        <td>" + id + "</td>\
-        <td id=\"status" + id + "\">" + model.status + "</td>\
-        <td><button type=\"button\" id=\"delete" + id + "\">X</button></td>\
-        </tr>\
-        ");
-        $("#" + id).click(() => {
-            selectedModelID = id;
-        });
-        $("#delete" + id).click(() => {
-             removeModel(id); 
-        });
+    $("#modelTable").append("\
+    <tr id=\"tr" + id + "\">\
+    <td><input type=\"radio\" id=\"" + id + "\" name=\"radiobtn\"></td>\
+    <td>" + id + "</td>\
+    <td id=\"status" + id + "\">" + model.status + "</td>\
+    <td><button type=\"button\" id=\"delete" + id + "\">X</button></td>\
+    </tr>\
+    ");
+    $("#" + id).click(() => {
+        selectedModelID = id;
+    });
+    $("#delete" + id).click(() => {
+            removeModel(id); 
+    });
 }
 
-$.getJSON("/api/models", data => {
-    for(var i=0; i<data.length; i++) {
-        addModel(data[i]);
+async function readFile(file) {
+    let text = await file.text();
+    let data = text.split(/\r\n|\r|\n/);
+    let features = data[0].split(",");
+    // add features keys to the dictionary with arrays as values.
+    features.forEach((attr, i) => {
+        if (attr in loadedData)
+            attr = features[i] += "2";
+        loadedData[attr] = [];
+    });
+    // add all of the data to the correct feature.
+    for (let i = 1; i < data.length; i++) {
+        let line = data[i].split(",");
+        if (line.length > 1) {
+            for (let j = 0; j < line.length; j++) {
+                loadedData[features[j]].push(parseFloat(line[j]));
+            }
+        }
     }
-  });
+};
+
+$("#regSelect").click(() => {
+    modelType = 'regression';
+});
+
+$("#hybridSelect").click(() => {
+    modelType = 'hybrid';
+});
 
 $("#trainBtn").click(() => {
-    // load data from csv file
-    let data;
-    let body = {train_data: data};
-    $.post("/api/model",body,(response, status) => {
-        // TODO check status
-        addModel(response);
-    },"json");
+    if(modelType == undefined) {
+        alert("no model type selected. Please choose one.");
+        return; 
+    }
+    if(loadedFile == undefined) {
+        alert("no file loaded. Please upload a CSV file.");
+        return;
+    }
+    loadedData = {};
+    readFile(loadedFile).then(() => {
 
-    let interval;
-    interval = setInterval(() => {
-        $.getJSON("/api/model", data => {
-            if(data.status == 'ready') {
-                clearInterval(interval);
-                $("#status" + data.model_id).html("ready");
-            }
-          });
-    }, 5000);
+        let body = {train_data: loadedData};
+
+        $.ajax({
+            url: '/api/model?model_type=' + modelType,
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            success: (model) => {
+                addModel(model);
+                alert("model uploaded succesfully");
+            },
+            error: () => {
+                alert("error in uploading model");
+            },
+            data: JSON.stringify(body)
+        });
+
+        let interval;
+        interval = setInterval(() => {
+            $.getJSON("/api/model", data => {
+                if(data.status == 'ready') {
+                    clearInterval(interval);
+                    $("#status" + data.model_id).html("ready");
+                }
+            });
+        }, 5000);
+    });
 });
+
+// gives us a larger drop area
+$("#drop-area").on('dragover', (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    // Style the drag-and-drop as a "copy file" operation.
+    event.originalEvent.dataTransfer.dropEffect = 'copy';
+});
+
+
+$("#drop-area").on('drop', (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    let file = event.originalEvent.dataTransfer.files[0];
+    let fileName = file.name.split(".");
+    // check if file is a csv file
+    if (fileName[fileName.length - 1] == "csv") {
+        loadedFile = file;
+    }
+    else {
+        alert("Only CSV files are allowed.");
+    }
+});
+
+$.getJSON("/api/models", data => {
+    data.forEach(model => { addModel(model); });
+  });
