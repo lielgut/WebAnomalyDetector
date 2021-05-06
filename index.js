@@ -111,7 +111,8 @@ $("#trainBtn").click(() => {
 });
 
 // gives us a larger drop area
-$("#drop-area").on('dragover', (event) => {
+$("#trainDropArea").on('dragover', (event) => {
+    $("#trainDropArea").css("background-color","gray");
     event.stopPropagation();
     event.preventDefault();
     // Style the drag-and-drop as a "copy file" operation.
@@ -119,7 +120,7 @@ $("#drop-area").on('dragover', (event) => {
 });
 
 
-$("#drop-area").on('drop', (event) => {
+$("#trainDropArea").on('drop', (event) => {
     event.stopPropagation();
     event.preventDefault();
     let file = event.originalEvent.dataTransfer.files[0];

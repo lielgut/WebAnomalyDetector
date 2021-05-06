@@ -61,7 +61,7 @@
   font-size: 55px
 }
 
-#drop-area {
+#trainDropArea, #detectDropArea {
   padding: 100px 80px;
   outline: 2px dashed #92b0b3;
   outline-offset: -10px;
