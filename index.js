@@ -1,8 +1,9 @@
 var selectedModelID;
 var modelType;
-var loadedFile;
-var loadedTrainData = {};
+var loadedTrainFile;
+var loadedDetectFile;
 var loadedDetectData = {};
+var anomalyData;
 
 function removeModel(id) {  
     if(selectedModelID == id) {
@@ -34,6 +35,7 @@ function addModel(model) {
     $("#" + id).click(() => {
         selectedModelID = id;
     });
+    $("#" + id).click();
     $("#delete" + id).click(() => {
             removeModel(id); 
     });
@@ -73,12 +75,12 @@ $("#trainBtn").click(() => {
         alert("no model type selected. Please choose one.");
         return; 
     }
-    if(loadedFile == undefined) {
+    if(loadedTrainFile == undefined) {
         alert("no file loaded. Please upload a CSV file.");
         return;
     }
-    loadedTrainData = {};
-    readFile(loadedFile, loadedTrainData).then(() => {
+    let loadedTrainData = {};
+    readFile(loadedTrainFile, loadedTrainData).then(() => {
 
         let body = {train_data: loadedTrainData};
 
@@ -100,7 +102,7 @@ $("#trainBtn").click(() => {
                     $("#status" + data.model_id).html("ready");
                 }
                 });
-        }, 5000);
+        }, 3000);
             },
             error: () => {
                 alert("error in uploading model");
@@ -110,7 +112,47 @@ $("#trainBtn").click(() => {
     });
 });
 
-// gives us a larger drop area
+$("#detectBtn").click(() => {
+    
+    if(selectedModelID == undefined) {
+        alert("no models loaded. Please upload a train file.");
+        return;
+    }
+    if($("#status" + selectedModelID).html() == "pending") {
+        alert("selected model is pending. Please wait for it to be ready.");
+        return;
+    }
+
+    loadedDetectData = {};
+    readFile(loadedDetectFile, loadedDetectData).then(() => {
+
+        let body = {predict_data: loadedDetectData};
+
+        $.ajax({
+            url: '/api/anomaly?model_id=' + selectedModelID,
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            success: (data) => {
+                anomalyData = data;
+                alert("recieved anomaly report.");
+            },
+            error: () => {
+                alert("error in uploading detect file.");
+            },
+            data: JSON.stringify(body)
+        });
+    });
+});
+
+$("#trainFileInput").change((event) => {
+    loadedTrainFile = event.target.files[0];
+});
+
+$("#detectFileInput").change((event) => {
+    loadedDetectFile = event.target.files[0];
+});
+
 $("#trainDropArea").on('dragover', (event) => {
     $("#trainDropArea").css("background-color","gray");
     event.stopPropagation();
@@ -119,15 +161,37 @@ $("#trainDropArea").on('dragover', (event) => {
     event.originalEvent.dataTransfer.dropEffect = 'copy';
 });
 
-
 $("#trainDropArea").on('drop', (event) => {
+    $("#trainDropArea").css("background-color","");
     event.stopPropagation();
     event.preventDefault();
     let file = event.originalEvent.dataTransfer.files[0];
     let fileName = file.name.split(".");
     // check if file is a csv file
     if (fileName[fileName.length - 1] == "csv") {
-        loadedFile = file;
+        loadedTrainFile = file;
+    }
+    else {
+        alert("Only CSV files are allowed.");
+    }
+});
+
+$("#detectDropArea").on('dragover', (event) => {
+    $("#detectDropArea").css("background-color","gray");
+    event.stopPropagation();
+    event.preventDefault();
+    // Style the drag-and-drop as a "copy file" operation.
+    event.originalEvent.dataTransfer.dropEffect = 'copy';
+});
+
+$("#detectDropArea").on('drop', (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    let file = event.originalEvent.dataTransfer.files[0];
+    let fileName = file.name.split(".");
+    // check if file is a csv file
+    if (fileName[fileName.length - 1] == "csv") {
+        loadedDetectFile = file;
     }
     else {
         alert("Only CSV files are allowed.");

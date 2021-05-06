@@ -76,6 +76,7 @@ app.post("/api/model", function (request, response) {
     } else {
         // TODO error
     }
+    detectors.push(det);
     det.learnNormal(t);
     model.status = 'ready';
 
