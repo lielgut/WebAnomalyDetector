@@ -1,15 +1,15 @@
-.body {
+.outContainer {
   background-color: gray;
 }
+
 .grid-container {
-  margin-top:0;
   display: grid;
   background-color: gray;
   top:0;
-  padding: 30px;
-  grid-template-columns: 800px;
-  grid-template-rows: 500px 200px ;
+  padding: 0 200px 200px;
   grid-gap: 1em;
+  grid-template-columns: 3fr 1fr;
+  grid-template-rows: 500px 350px;
 }
 /* Designing all grid-items */
 .Model {
@@ -17,10 +17,10 @@
   padding: 30px;
   font-size: 30px;
   text-align: center;
-  grid-column-start: 3;
-  grid-column-end: 5;
+  grid-column-start: 2;
+  grid-column-end: 2;
   grid-row-start: 1;
-  grid-row-end: 2;
+  grid-row-end: 1;
 }
 
 .Graph {
@@ -29,9 +29,9 @@
   font-size: 30px;
   text-align: center;
   grid-column-start: 1;
-  grid-column-end: 3;
+  grid-column-end: 1;
   grid-row-start: 1;
-  grid-row-end: 2;
+  grid-row-end: 1;
 }
 .Table {
   background-color: rgba(545, 455, 444, 0.8);
@@ -39,18 +39,18 @@
   font-size: 30px;
   text-align: center;
   grid-column-start: 1;
-  grid-column-end: 3;
+  grid-column-end: 1;
   grid-row-start: 2;
-  grid-row-end: 5;
+  grid-row-end: 2;
 }
 .DropOff{
   background-color: rgba(545, 455, 444, 0.8);
   font-size: 30px;
   text-align: center;
-  grid-column-start: 3;
-  grid-column-end: 5;
+  grid-column-start: 2;
+  grid-column-end: 2;
   grid-row-start: 2;
-  grid-row-end: 5;
+  grid-row-end: 2;
 } 
   
         /* Designing h1 element */
@@ -67,4 +67,7 @@
   outline-offset: -10px;
   -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
   transition: outline-offset .15s ease-in-out, background-color .15s linear;
+}
+.Buttons {
+  margin-top: 100px;
 }
