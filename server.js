@@ -158,7 +158,7 @@ app.post("/api/anomaly", function (request, response) {
                             }
                             det.cf = detInfo.cf;
                             det.threshold = detInfo.threshold;
-                            response.send(JSON.stringify({anomalies: det.detect(t), reason: undefined}));
+                            response.send(JSON.stringify(det.detect(t)));
                         }
                         else {
                             response.redirect(303, '/api/model?model_id=' + id);

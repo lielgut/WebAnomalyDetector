@@ -85,9 +85,11 @@ class SimpleAnomalyDetector {
 
     detect(ts) {        
         let reports = {};
+        let correlationInfo = {};
         this.cf.forEach(c => {
             let spans = [];
             let st;
+            correlationInfo[c.feature1] = c.feature2;
             let x = ts.getAttributeData(c.feature1);
             let y = ts.getAttributeData(c.feature2);
             for (let i = 0; i < x.length; i++) {
@@ -107,7 +109,7 @@ class SimpleAnomalyDetector {
             }
             reports[c.feature1] = spans;
         });
-        return reports;
+        return {anomalies: reports, reason: correlationInfo};
     }
 
     isAnomalous(x, y, c) {
