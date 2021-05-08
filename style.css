@@ -1,73 +1,95 @@
-.outContainer {
-  background-color: gray;
-}
 
-.grid-container {
-  display: grid;
-  background-color: gray;
-  top:0;
-  padding: 0 200px 200px;
-  grid-gap: 1em;
-  grid-template-columns: 3fr 1fr;
-  grid-template-rows: 500px 350px;
-}
-/* Designing all grid-items */
-.Model {
-  background-color: rgba(255, 255, 255, 0.8);
-  padding: 30px;
-  font-size: 30px;
-  text-align: center;
-  grid-column-start: 2;
-  grid-column-end: 2;
-  grid-row-start: 1;
-  grid-row-end: 1;
-}
-
-.Graph {
-  background-color: rgba(545, 455, 444, 0.8);
-  padding: 20px;
-  font-size: 30px;
-  text-align: center;
-  grid-column-start: 1;
-  grid-column-end: 1;
-  grid-row-start: 1;
-  grid-row-end: 1;
-}
-.Table {
-  background-color: rgba(545, 455, 444, 0.8);
-  padding: 20px;
-  font-size: 30px;
-  text-align: center;
-  grid-column-start: 1;
-  grid-column-end: 1;
-  grid-row-start: 2;
-  grid-row-end: 2;
-}
-.DropOff{
-  background-color: rgba(545, 455, 444, 0.8);
-  font-size: 30px;
-  text-align: center;
-  grid-column-start: 2;
-  grid-column-end: 2;
-  grid-row-start: 2;
-  grid-row-end: 2;
-} 
-  
-        /* Designing h1 element */
 .title {
-  text-align: center;
-  background-color: gray;
-  padding : 0px ;
-  font-size: 55px
+  font-size: 40px;
+  font-weight: bold;
+  color: #da7f8f;
+  text-align: left;
+  margin: 0% 2%;
 }
+
+body {
+  background-color: #faf3f3;
+  font-family: 'Nunito', sans-serif !important;
+  text-align: center;
+  padding: 1% 15% 2% 15%;
+}
+
+@media (max-width: 700px) {
+
+  body {
+    padding: 0px;
+  }
+  .title {
+    margin-left: 5%;
+    margin-top: 2%;
+  }
+
+}
+
+
+.grid1 {
+}
+
+.grid2 {
+}
+
+.grid3 {
+}
+
+.grid4{
+} 
+
+.graphDiv {
+  font-size: 30px;
+  background-color: #e1e5ea;
+  height: 400px;
+  margin: 15px 5px;
+}
+
+.modelsDiv {
+  font-size: 20px;
+  background-color: #e1e5ea;
+  height: 400px;
+  margin: 15px 5px;
+}
+
+.tableDiv {
+  font-size: 30px;
+  background-color: #e1e5ea;
+  height: 400px;
+  margin: 15px 5px;
+}
+
+.uploadDiv {
+  font-size: 15px;
+  background-color: #e1e5ea;
+  height: 400px;
+  margin: 15px 5px;
+  padding: 5% 5%;
+  text-align: right;
+}
+
 
 #trainDropArea, #detectDropArea {
-  padding: 100px 80px;
   outline: 2px dashed #92b0b3;
-  outline-offset: -10px;
-  -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
-  transition: outline-offset .15s ease-in-out, background-color .15s linear;
+  padding: 10% 10%;  
 }
-.Buttons {
-  margin-top: 100px;
+
+.models-scrollbar {
+position: relative;
+overflow: auto;
+}
+
+#trainRow {
+  padding: 3%;
+}
+
+#detectRow {
+  padding: 3%;
+}
+
+#trainBtn {
+}
+
+#detectBtn {
 }
