@@ -24,12 +24,12 @@ function removeModel(id) {
 
 function addModel(model) {
     let id = model.model_id;
-    $("#modelTable").append("\
+    $("#modelTableBody").append("\
     <tr id=\"tr" + id + "\">\
     <td><input type=\"radio\" id=\"" + id + "\" name=\"radiobtn\"></td>\
     <td>" + id + "</td>\
     <td id=\"status" + id + "\">" + model.status + "</td>\
-    <td><button type=\"button\" id=\"delete" + id + "\">X</button></td>\
+    <td><button type=\"button\" id=\"delete" + id + "\" class=\"btn btn-sm btn-danger\">X</button></td>\
     </tr>\
     ");
     $("#" + id).click(() => {
