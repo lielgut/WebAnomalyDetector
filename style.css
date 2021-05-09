@@ -1,4 +1,3 @@
-
 .title {
   font-size: 40px;
   font-weight: bold;
@@ -15,7 +14,6 @@ body {
 }
 
 @media (max-width: 700px) {
-
   body {
     padding: 0px;
   }
@@ -23,21 +21,7 @@ body {
     margin-left: 5%;
     margin-top: 2%;
   }
-
 }
-
-
-.grid1 {
-}
-
-.grid2 {
-}
-
-.grid3 {
-}
-
-.grid4{
-} 
 
 .graphDiv {
   font-size: 30px;
@@ -54,7 +38,7 @@ body {
 }
 
 .tableDiv {
-  font-size: 30px;
+  font-size: 20px;
   background-color: #e1e5ea;
   height: 400px;
   margin: 15px 5px;
@@ -69,15 +53,22 @@ body {
   text-align: right;
 }
 
-
-#trainDropArea, #detectDropArea {
+.dropArea {
+  position: relative;
   outline: 2px dashed #92b0b3;
-  padding: 10% 10%;  
+  padding: 10% 10%;
 }
 
-.models-scrollbar {
-position: relative;
-overflow: auto;
+.dropArea.has-advanced-upload {
+  outline: 2px dashed #92b0b3;
+  outline-offset: -5px;
+  -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+  transition: outline-offset .15s ease-in-out, background-color .15s linear;
+}
+
+.scrollable {
+  position: relative;
+  overflow: auto;
 }
 
 #trainRow {
@@ -88,8 +79,6 @@ overflow: auto;
   padding: 3%;
 }
 
-#trainBtn {
-}
+#trainBtn {}
 
-#detectBtn {
-}
+#detectBtn {}

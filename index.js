@@ -5,9 +5,20 @@ var loadedDetectFile;
 var loadedDetectData = {};
 var anomalyData;
 
-function removeModel(id) {  
-    if(selectedModelID == id) {
-        selectedModelID = undefined;  
+// Check if the browser supports drag&drop ///////////////
+var isAdvancedUpload = function () {
+    var div = document.createElement('div');
+    return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
+}();
+
+if (isAdvancedUpload) {
+    $('.dropArea').addClass('has-advanced-upload');
+}
+/////////////////////////////////////////////////////////
+
+function removeModel(id) {
+    if (selectedModelID == id) {
+        selectedModelID = undefined;
     }
     $.ajax({
         url: '/api/model?model_id=' + id,
@@ -37,9 +48,34 @@ function addModel(model) {
     });
     $("#" + id).click();
     $("#delete" + id).click(() => {
-            removeModel(id); 
+        removeModel(id);
     });
 }
+
+function createTable() {
+    $("#TableHeaders").html("");
+    $("#TableRows").html("");
+    let attrs = Object.keys(loadedDetectData);
+    if (attrs.length == 0) {
+        return;
+    }
+    let headers = $("#TableHeaders");
+    let rows = $("#TableRows");
+    let numRows = loadedDetectData[attrs[0]].length;
+    // adds the attribute names as columns
+    attrs.forEach(attr => {
+        headers.append("<th>" + attr + "</th>");
+    });
+    for (let i = 0; i < numRows; i++) {
+        rows.append("<tr id=\"row" + i + "\"></tr>");
+        let row = $("#row" + i);
+        attrs.forEach(attr => {
+            let attrData = loadedDetectData[attr];
+            row.append("<td id=\"" + attr + i + "\">" + attrData[i] + "</td>");
+        });
+
+    }
+};
 
 async function readFile(file, loadedData) {
     let text = await file.text();
@@ -71,18 +107,18 @@ $("#hybridSelect").click(() => {
 });
 
 $("#trainBtn").click(() => {
-    if(modelType == undefined) {
+    if (modelType == undefined) {
         alert("no model type selected. Please choose one.");
-        return; 
+        return;
     }
-    if(loadedTrainFile == undefined) {
+    if (loadedTrainFile == undefined) {
         alert("no file loaded. Please upload a CSV file.");
         return;
     }
     let loadedTrainData = {};
     readFile(loadedTrainFile, loadedTrainData).then(() => {
 
-        let body = {train_data: loadedTrainData};
+        let body = { train_data: loadedTrainData };
 
         $.ajax({
             url: '/api/model?model_type=' + modelType,
@@ -90,19 +126,19 @@ $("#trainBtn").click(() => {
             dataType: 'json',
             contentType: 'application/json',
             success: (model) => {
-                
+
                 addModel(model);
                 alert("model uploaded succesfully");
 
                 let interval;
                 interval = setInterval(() => {
-                $.getJSON("/api/model?model_id=" + model.model_id, data => {
-                if(data.status == 'ready') {
-                    clearInterval(interval);
-                    $("#status" + data.model_id).html("ready");
-                }
-                });
-        }, 3000);
+                    $.getJSON("/api/model?model_id=" + model.model_id, data => {
+                        if (data.status == 'ready') {
+                            clearInterval(interval);
+                            $("#status" + data.model_id).html("ready");
+                        }
+                    });
+                }, 3000);
             },
             error: () => {
                 alert("error in uploading model");
@@ -113,20 +149,20 @@ $("#trainBtn").click(() => {
 });
 
 $("#detectBtn").click(() => {
-    
-    if(selectedModelID == undefined) {
+
+    if (selectedModelID == undefined) {
         alert("no models loaded. Please upload a train file.");
         return;
     }
-    if($("#status" + selectedModelID).html() == "pending") {
+    if ($("#status" + selectedModelID).html() == "pending") {
         alert("selected model is pending. Please wait for it to be ready.");
         return;
     }
-
     loadedDetectData = {};
     readFile(loadedDetectFile, loadedDetectData).then(() => {
 
-        let body = {predict_data: loadedDetectData};
+        let body = { predict_data: loadedDetectData };
+        createTable();
 
         $.ajax({
             url: '/api/anomaly?model_id=' + selectedModelID,
@@ -154,7 +190,7 @@ $("#detectFileInput").change((event) => {
 });
 
 $("#trainDropArea").on('dragover', (event) => {
-    $("#trainDropArea").css("background-color","gray");
+    $("#trainDropArea").css("background-color", "gray");
     event.stopPropagation();
     event.preventDefault();
     // Style the drag-and-drop as a "copy file" operation.
@@ -162,7 +198,7 @@ $("#trainDropArea").on('dragover', (event) => {
 });
 
 $("#trainDropArea").on('drop', (event) => {
-    $("#trainDropArea").css("background-color","");
+    $("#trainDropArea").css("background-color", "");
     event.stopPropagation();
     event.preventDefault();
     let file = event.originalEvent.dataTransfer.files[0];
@@ -177,7 +213,7 @@ $("#trainDropArea").on('drop', (event) => {
 });
 
 $("#detectDropArea").on('dragover', (event) => {
-    $("#detectDropArea").css("background-color","gray");
+    $("#detectDropArea").css("background-color", "gray");
     event.stopPropagation();
     event.preventDefault();
     // Style the drag-and-drop as a "copy file" operation.
@@ -200,4 +236,4 @@ $("#detectDropArea").on('drop', (event) => {
 
 $.getJSON("/api/models", data => {
     data.forEach(model => { addModel(model); });
-  });
+});
