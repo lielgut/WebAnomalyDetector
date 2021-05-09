@@ -13,6 +13,15 @@ body {
   padding: 1% 15% 2% 15%;
 }
 
+@media (max-width: 991px) {
+  body {
+    padding: 5%;
+  }
+  .title {
+    margin-left: 3%;
+  }
+}
+
 @media (max-width: 700px) {
   body {
     padding: 0px;
@@ -56,7 +65,8 @@ body {
 .dropArea {
   position: relative;
   outline: 2px dashed #92b0b3;
-  padding: 10% 10%;
+  padding: 50px 30px;
+  height: 125px;
 }
 
 .dropArea.has-advanced-upload {
@@ -71,14 +81,19 @@ body {
   overflow: auto;
 }
 
-#trainRow {
-  padding: 3%;
+#modelTypeDiv {
+  text-align: left;
+  height: 20px;
+  padding: 5px 10px;
+  font-size: 15px;
 }
 
-#detectRow {
-  padding: 3%;
+.btnDiv {
+  height: 50px;
+  padding: 10px 10px;
+  padding-right: 0px;
 }
 
-#trainBtn {}
-
-#detectBtn {}
+#trainBtn {
+  color: white;
+}
