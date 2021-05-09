@@ -55,23 +55,27 @@
       <div class="grid4 col-lg-4 col-md-12">
         <div class="uploadDiv">
           <div id="trainDropArea" class="dropArea">
-                <input type="file" id="trainFileInput" accept=".csv">
-          </div>    
+            <input type="file" id="trainFileInput" class="fileBox" accept=".csv">
+            <label for="trainFileInput"><strong>Choose a train file</strong><span> or drag it
+                here.</span></label>
+          </div>
           <div id="modelTypeDiv">
             <label><b>model type:</b></label>
             <input type="radio" id="regSelect" name="typeSelect">
             <label for="regSelect">regression</label>
             <input type="radio" id="hybridSelect" name="typeSelect">
             <label for="hybridSelect">hybrid</label>
-          </div>      
-          <div class="btnDiv">
-            <button type="button" class="btn btn-info btn-sm" id="trainBtn">train</button>
-          </div>          
-          <div id="detectDropArea" class="dropArea">
-             <input type="file" id="detectFileInput" accept=".csv">
           </div>
           <div class="btnDiv">
-          <button type="button" class="btn btn-danger btn-sm" id="detectBtn">detect</button>
+            <button type="button" class="btn btn-info btn-sm" id="trainBtn">train</button>
+          </div>
+          <div id="detectDropArea" class="dropArea">
+            <input type="file" id="detectFileInput" class="fileBox" accept=".csv">
+            <label for="detectFileInput"><strong>Choose a detect file</strong><span> or drag it
+                here.</span></label>
+          </div>
+          <div class="btnDiv">
+            <button type="button" class="btn btn-danger btn-sm" id="detectBtn">detect</button>
           </div>
         </div>
       </div>

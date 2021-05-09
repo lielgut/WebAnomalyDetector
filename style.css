@@ -67,6 +67,7 @@ body {
   outline: 2px dashed #92b0b3;
   padding: 50px 30px;
   height: 125px;
+  text-align: center;
 }
 
 .dropArea.has-advanced-upload {
@@ -74,6 +75,42 @@ body {
   outline-offset: -5px;
   -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
   transition: outline-offset .15s ease-in-out, background-color .15s linear;
+}
+
+/* design for the fileBox */
+
+.fileBox {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.fileBox+label {
+  max-width: 80%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  display: inline-block;
+  overflow: hidden;
+  /* "hand" cursor */
+  cursor: pointer;
+}
+
+.fileBox+label:hover strong, .fileBox:focus+label strong, .fileBox.has-focus+label strong {
+  color: #39bfd3;
+}
+
+.fileBox:focus+label {
+  outline: 1px dotted #000;
+  outline: -webkit-focus-ring-color auto 5px;
+}
+
+.fileBox+label * {
+  /* in case of FastClick lib use */
+  pointer-events: none;
 }
 
 .scrollable {
