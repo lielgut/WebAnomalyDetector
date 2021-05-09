@@ -190,7 +190,6 @@ $("#detectFileInput").change((event) => {
 });
 
 $("#trainDropArea").on('dragover', (event) => {
-    $("#trainDropArea").css("background-color", "gray");
     event.stopPropagation();
     event.preventDefault();
     // Style the drag-and-drop as a "copy file" operation.
@@ -198,7 +197,6 @@ $("#trainDropArea").on('dragover', (event) => {
 });
 
 $("#trainDropArea").on('drop', (event) => {
-    $("#trainDropArea").css("background-color", "");
     event.stopPropagation();
     event.preventDefault();
     let file = event.originalEvent.dataTransfer.files[0];
@@ -213,7 +211,6 @@ $("#trainDropArea").on('drop', (event) => {
 });
 
 $("#detectDropArea").on('dragover', (event) => {
-    $("#detectDropArea").css("background-color", "gray");
     event.stopPropagation();
     event.preventDefault();
     // Style the drag-and-drop as a "copy file" operation.
