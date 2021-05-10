@@ -177,7 +177,6 @@ $("#detectBtn").click(() => {
             contentType: 'application/json',
             success: (data) => {
                 anomalyData = data;
-
                 alert("recieved anomaly report.");
             },
             error: () => {
@@ -198,7 +197,7 @@ $("#trainFileInput").change((event) => {
 $("#detectFileInput").change((event) => {
     loadedDetectFile = event.target.files[0];
     // change label to show file name
-    $("#trainFileLabel").text(loadedDetectFile.name);
+    $("#detectFileLabel").text(loadedDetectFile.name);
 });
 
 // fileBox for train dropArea

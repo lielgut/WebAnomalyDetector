@@ -1,13 +1,13 @@
 .title {
   font-size: 40px;
   font-weight: bold;
-  color: #f28482;
+  color: #4e76dc;
   text-align: left;
   margin: 0% 2%;
 }
 
 body {
-  background-color: #f7ede2;
+  background-color: #f6f7fa;
   font-family: 'Nunito', sans-serif !important;
   text-align: center;
   padding: 1% 15% 2% 15%;
@@ -32,35 +32,27 @@ body {
   }
 }
 
-.views {
-  background-color: #f5cac3;
-  height: 400px;
-  margin: 15px 5px;
-}
-
 .graphDiv {
   font-size: 30px;
 }
 
-.modelsDiv {
-  font-size: 20px;
-}
-
-.tableDiv {
+.tableDiv, .modelsDiv {
   font-size: 20px;
 }
 
 .uploadDiv {
   font-size: 15px;
-  padding: 5% 5%;
+}
+
+.btnDiv {
   text-align: right;
 }
 
 .dropArea {
   position: relative;
   outline: 2px dashed #92b0b3;
-  padding: 50px 30px;
-  height: 125px;
+  padding: 45px 30px;
+  height: 110px;
   text-align: center;
 }
 
@@ -137,12 +129,25 @@ body {
 }
 
 tr.headers th {
-  background: #f94144;
-  color: white;
+  background: #fff;
 }
 
 th {
   position: sticky;
   top: 0;
   box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+
+.card {
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid #e3e6f0;
+  border-radius: .35rem;
+  height: 400px;
+  margin: 15px 5px;
+}
+
+.card-header {
+  background-color: #f8f9fc;
+  font-size: 30px;
 }
