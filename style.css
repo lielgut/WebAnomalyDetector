@@ -1,9 +1,6 @@
-.title {
-  font-size: 40px;
-  font-weight: bold;
-  color: #4e76dc;
+.logo {
   text-align: left;
-  margin: 0% 2%;
+  margin-top: 1%;
 }
 
 body {
@@ -17,8 +14,8 @@ body {
   body {
     padding: 5%;
   }
-  .title {
-    margin-left: 3%;
+  .logo {
+    text-align: center;
   }
 }
 
@@ -26,9 +23,8 @@ body {
   body {
     padding: 0px;
   }
-  .title {
-    margin-left: 5%;
-    margin-top: 2%;
+  .logo {
+    margin-top: 5%;
   }
 }
 
@@ -68,7 +64,7 @@ body {
 .dropArea.is-dragover {
   outline-offset: -10px;
   outline-color: #c8dadf;
-  background-color: #fff;
+  background-color: #f8f9fc;
 }
 
 /* design for the fileBox */
