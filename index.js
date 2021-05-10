@@ -69,7 +69,7 @@ function createTable() {
     attrs.forEach(attr => {
         headers.append("<th>" + attr + "</th>");
     });
-    
+
     let s = "";
     for (let i = 0; i < numRows; i++) {
         s = s + "<tr id=\"row" + i + "\">\n"
