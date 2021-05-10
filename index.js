@@ -66,15 +66,17 @@ function createTable() {
     attrs.forEach(attr => {
         headers.append("<th>" + attr + "</th>");
     });
+    
+    let s = "";
     for (let i = 0; i < numRows; i++) {
-        rows.append("<tr id=\"row" + i + "\"></tr>");
-        let row = $("#row" + i);
+        s = s + "<tr id=\"row" + i + "\">\n"
         attrs.forEach(attr => {
             let attrData = loadedDetectData[attr];
-            row.append("<td id=\"" + attr + i + "\">" + attrData[i] + "</td>");
+            s += "<td id=\"" + attr + i + "\">" + attrData[i] + "</td>\n";
         });
-
+        s += "</tr>\n";
     }
+    $("#TableRows").append(s);
 };
 
 async function readFile(file, loadedData) {
