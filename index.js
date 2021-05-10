@@ -58,7 +58,6 @@ function addModel(model) {
 
 function createTable() {
     $("#TableHeaders").html("");
-    $("#TableRows").html("");
     let attrs = Object.keys(loadedDetectData);
     if (attrs.length == 0) {
         return;
@@ -70,15 +69,17 @@ function createTable() {
     attrs.forEach(attr => {
         headers.append("<th>" + attr + "</th>");
     });
+    
+    let s = "";
     for (let i = 0; i < numRows; i++) {
-        rows.append("<tr id=\"row" + i + "\"></tr>");
-        let row = $("#row" + i);
+        s = s + "<tr id=\"row" + i + "\">\n"
         attrs.forEach(attr => {
             let attrData = loadedDetectData[attr];
-            row.append("<td id=\"" + attr + i + "\">" + attrData[i] + "</td>");
+            s += "<td id=\"" + attr + i + "\">" + attrData[i] + "</td>\n";
         });
-
+        s += "</tr>\n";
     }
+    $("#TableRows").html(s);
 };
 
 async function readFile(file, loadedData) {
