@@ -70,11 +70,29 @@ body {
   text-align: center;
 }
 
-.dropArea.has-advanced-upload {
+.dropArea.dropAreaRefreshAnimation {
   outline: 2px dashed #92b0b3;
   outline-offset: -5px;
   -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
   transition: outline-offset .15s ease-in-out, background-color .15s linear;
+}
+
+/* animation for when file is dragged over the dropArea */
+
+.dropArea.is-dragover {
+  outline-offset: -10px;
+  outline-color: #c8dadf;
+  background-color: #fff;
+}
+
+.dropArea.is-uploading .fileUploading {
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  -webkit-transform: translateY( -50%);
+  transform: translateY( -50%);
 }
 
 /* design for the fileBox */
@@ -92,14 +110,13 @@ body {
   max-width: 80%;
   text-overflow: ellipsis;
   white-space: nowrap;
+  /* "hand" cursor */
   cursor: pointer;
   display: inline-block;
   overflow: hidden;
-  /* "hand" cursor */
-  cursor: pointer;
 }
 
-.fileBox+label:hover strong, .fileBox:focus+label strong, .fileBox.has-focus+label strong {
+.fileBox+label:hover strong, .fileBox:focus+label strong {
   color: #39bfd3;
 }
 

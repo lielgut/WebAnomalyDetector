@@ -6,13 +6,17 @@ var loadedDetectData = {};
 var anomalyData;
 
 // Check if the browser supports drag&drop ///////////////
-var isAdvancedUpload = function () {
+var supportsDragnDrop = function () {
     var div = document.createElement('div');
     return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
 }();
 
-if (isAdvancedUpload) {
-    $('.dropArea').addClass('has-advanced-upload');
+if (supportsDragnDrop) {
+    // dropArea animation when refreshing the page.
+    $('.dropArea').addClass('dropAreaRefreshAnimation');
+}
+else {
+    alert("Please enable JavaScript.");
 }
 /////////////////////////////////////////////////////////
 
@@ -146,6 +150,7 @@ $("#trainBtn").click(() => {
             data: JSON.stringify(body)
         });
     });
+    $("#trainFileLabel").html("<strong>Choose a train file</strong><span> or drag it here.</span></label>")
 });
 
 $("#detectBtn").click(() => {
@@ -171,6 +176,7 @@ $("#detectBtn").click(() => {
             contentType: 'application/json',
             success: (data) => {
                 anomalyData = data;
+
                 alert("recieved anomaly report.");
             },
             error: () => {
@@ -179,24 +185,33 @@ $("#detectBtn").click(() => {
             data: JSON.stringify(body)
         });
     });
+    $("#detectFileLabel").html("<strong>Choose a detect file</strong><span> or drag it here.</span></label>")
 });
 
 $("#trainFileInput").change((event) => {
     loadedTrainFile = event.target.files[0];
+    // change label to show file name
+    $("#trainFileLabel").text(loadedTrainFile.name);
 });
 
 $("#detectFileInput").change((event) => {
     loadedDetectFile = event.target.files[0];
+    // change label to show file name
+    $("#trainFileLabel").text(loadedDetectFile.name);
 });
 
+// fileBox for train dropArea
 $("#trainDropArea").on('dragover', (event) => {
+    // prevent any unwanted behaviors for the assigned events across browsers.
     event.stopPropagation();
     event.preventDefault();
     // Style the drag-and-drop as a "copy file" operation.
     event.originalEvent.dataTransfer.dropEffect = 'copy';
-});
-
-$("#trainDropArea").on('drop', (event) => {
+}).on('dragover dragenter', event => {
+    $("#trainDropArea").addClass('is-dragover');
+}).on('dragleave dragend drop', () => {
+    $("#trainDropArea").removeClass('is-dragover');
+}).on('drop', (event) => {
     event.stopPropagation();
     event.preventDefault();
     let file = event.originalEvent.dataTransfer.files[0];
@@ -204,20 +219,25 @@ $("#trainDropArea").on('drop', (event) => {
     // check if file is a csv file
     if (fileName[fileName.length - 1] == "csv") {
         loadedTrainFile = file;
+        // change label to show file name
+        $("#trainFileLabel").text(file.name);
     }
     else {
         alert("Only CSV files are allowed.");
     }
 });
 
+// fileBox for detect dropArea
 $("#detectDropArea").on('dragover', (event) => {
     event.stopPropagation();
     event.preventDefault();
     // Style the drag-and-drop as a "copy file" operation.
     event.originalEvent.dataTransfer.dropEffect = 'copy';
-});
-
-$("#detectDropArea").on('drop', (event) => {
+}).on('dragover dragenter', () => {
+    $("#detectDropArea").addClass('is-dragover');
+}).on('dragleave dragend drop', () => {
+    $("#detectDropArea").removeClass('is-dragover');
+}).on('drop', (event) => {
     event.stopPropagation();
     event.preventDefault();
     let file = event.originalEvent.dataTransfer.files[0];
@@ -225,6 +245,8 @@ $("#detectDropArea").on('drop', (event) => {
     // check if file is a csv file
     if (fileName[fileName.length - 1] == "csv") {
         loadedDetectFile = file;
+        // change label to show file name
+        $("#detectFileLabel").text(file.name);
     }
     else {
         alert("Only CSV files are allowed.");
