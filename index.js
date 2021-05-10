@@ -54,7 +54,6 @@ function addModel(model) {
 
 function createTable() {
     $("#TableHeaders").html("");
-    $("#TableRows").html("");
     let attrs = Object.keys(loadedDetectData);
     if (attrs.length == 0) {
         return;
@@ -76,7 +75,7 @@ function createTable() {
         });
         s += "</tr>\n";
     }
-    $("#TableRows").append(s);
+    $("#TableRows").html(s);
 };
 
 async function readFile(file, loadedData) {
