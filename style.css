@@ -29,7 +29,7 @@ body {
 }
 
 .graphDiv {
-  font-size: 30px;
+  font-size: 15px;
 }
 
 .tableDiv, .modelsDiv {
@@ -145,5 +145,10 @@ th {
 
 .card-header {
   background-color: #f8f9fc;
+  color: #4e76dc;
   font-size: 30px;
+}
+
+#anomaliesTable {
+  width: 50px;
 }

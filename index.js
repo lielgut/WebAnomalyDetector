@@ -3,7 +3,8 @@ var modelType;
 var loadedTrainFile;
 var loadedDetectFile;
 var loadedDetectData = {};
-var anomalyData;
+var anomalyData = {};
+var selectedFeature;
 
 // Check if the browser supports drag&drop ///////////////
 var supportsDragnDrop = function () {
@@ -57,7 +58,6 @@ function addModel(model) {
 }
 
 function createTable() {
-    $("#TableHeaders").html("");
     let attrs = Object.keys(loadedDetectData);
     if (attrs.length == 0) {
         return;
@@ -66,11 +66,13 @@ function createTable() {
     let rows = $("#TableRows");
     let numRows = loadedDetectData[attrs[0]].length;
     // adds the attribute names as columns
-    attrs.forEach(attr => {
-        headers.append("<th>" + attr + "</th>");
-    });
-
     let s = "";
+    attrs.forEach(attr => {
+        s += "<th>" + attr + "</th>\n";        
+    });
+    headers.html(s);
+
+    s = "";
     for (let i = 0; i < numRows; i++) {
         s = s + "<tr id=\"row" + i + "\">\n"
         attrs.forEach(attr => {
@@ -81,6 +83,25 @@ function createTable() {
     }
     $("#TableRows").html(s);
 };
+
+function updateSelections() {
+    let s = "";
+    let attrs = Object.keys(loadedDetectData);
+    attrs.forEach(attr => {
+        s += "<option value=\"" + attr + "\">" + attr + "</option>\n";
+    });
+    $("#featuresSelect").html(s);
+}
+
+function updateAnomalies() {
+    let s = "";
+    if(selectedFeature != undefined) {
+        anomalyData.anomalies[selectedFeature].forEach(range => {
+            s += "<tr><td>" + range[0] + "</td><td>" + range[1] + "</td></tr>\n";           
+        });
+    }
+    $("#anomaliesRows").html(s);
+}
 
 async function readFile(file, loadedData) {
     let text = await file.text();
@@ -168,6 +189,10 @@ $("#detectBtn").click(() => {
     readFile(loadedDetectFile, loadedDetectData).then(() => {
 
         let body = { predict_data: loadedDetectData };
+
+        selectedFeature = Object.keys(loadedDetectData)[0];
+        updateSelections();
+        $("#featuresSelect").val(selectedFeature);        
         createTable();
 
         $.ajax({
@@ -177,6 +202,7 @@ $("#detectBtn").click(() => {
             contentType: 'application/json',
             success: (data) => {
                 anomalyData = data;
+                updateAnomalies();
                 alert("recieved anomaly report.");
             },
             error: () => {
@@ -186,6 +212,11 @@ $("#detectBtn").click(() => {
         });
     });
     $("#detectFileLabel").html("<strong>Choose a detect file</strong><span> or drag it here.</span></label>")
+});
+
+$("#featuresSelect").change(() => {
+    selectedFeature = $("#featuresSelect").get(0).value;
+    updateAnomalies();
 });
 
 $("#trainFileInput").change((event) => {

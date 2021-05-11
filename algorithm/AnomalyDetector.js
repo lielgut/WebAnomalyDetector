@@ -68,9 +68,10 @@ class SimpleAnomalyDetector {
     }
 
     learnHelper(ts, p, f1, f2, ps) {
+        let c;
         if (p > this.threshold) {
             let l = linear_reg(ps);
-            let c = {
+            c = {
                 feature1: f1,
                 feature2: f2,
                 correlation: p,
@@ -78,35 +79,44 @@ class SimpleAnomalyDetector {
                 threshold: this.findThreshold(ps, l) * 1.1,
                 cx: 0,
                 cy: 0
-            };
-            this.cf.push(c);
+            };            
         }
+        else {
+            c = {
+                feature1: f1,
+                feature2: undefined    
+            }
+        }
+        this.cf.push(c);
     }
 
     detect(ts) {        
         let reports = {};
         let correlationInfo = {};
+    
         this.cf.forEach(c => {
             let spans = [];
             let st;
             correlationInfo[c.feature1] = c.feature2;
-            let x = ts.getAttributeData(c.feature1);
-            let y = ts.getAttributeData(c.feature2);
-            for (let i = 0; i < x.length; i++) {
-                if (this.isAnomalous(x[i], y[i], c)) {
-                    if(st == undefined) {
-                        st = i;
-                    }
-                    if(i == x.length - 1) {
-                        spans.push([st,i+1]);
-                    }
-                } else {                    
-                    if(st != undefined) {
-                        spans.push([st,i]);
-                        st = undefined;               
+            if(c.feature2 != undefined) {
+                let x = ts.getAttributeData(c.feature1);
+                let y = ts.getAttributeData(c.feature2);
+                for (let i = 0; i < x.length; i++) {
+                    if (this.isAnomalous(x[i], y[i], c)) {
+                        if(st == undefined) {
+                            st = i;
+                        }
+                        if(i == x.length - 1) {
+                            spans.push([st,i+1]);
+                        }
+                    } else {                    
+                        if(st != undefined) {
+                            spans.push([st,i]);
+                            st = undefined;               
+                        }
                     }
                 }
-            }
+            }            
             reports[c.feature1] = spans;
         });
         return {anomalies: reports, reason: correlationInfo};

@@ -25,12 +25,26 @@
         <div class="graphDiv views card shadow">
       
           <div class="card-header py-2 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">Graph</h6>        
+            <h6 class="m-0 font-weight-bold">Graph</h6>        
           </div>
 
 
           <div class="card-body">
-            GRAPH HERE
+            
+            <select id="featuresSelect">
+            </select>
+            
+            <table id="anomaliesTable" class="table table-hover table-sm">              
+              <thead>                
+                <tr class="headers">
+                  <th>start</th>
+                  <th>end</th>
+                </tr>
+              </thead>
+              <tbody id="anomaliesRows">                             
+              </tbody>
+            </table>
+
           </div>
           
 
@@ -44,7 +58,7 @@
         <div class="modelsDiv scrollable views card shadow">
 
           <div class="card-header py-2 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">Models</h6>        
+            <h6 class="m-0 font-weight-bold">Models</h6>        
           </div>
 
 
@@ -81,13 +95,13 @@
         <div class="tableDiv scrollable views card shadow">
 
           <div class="card-header py-2 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">Data</h6>        
+            <h6 class="m-0 font-weight-bold">Data</h6>        
           </div>
 
 
           <div class="card-body">
             
-            <table id="DetectTable" class="table table-bordered table-sm">
+            <table id="DetectTable" class="table table-bordered table-hover table-sm">
               <thead>
                 <tr id="TableHeaders" class="headers">
                 </tr>
@@ -107,7 +121,7 @@
         <div class="uploadDiv views card shadow">
 
           <div class="card-header py-2 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">Upload</h6>        
+            <h6 class="m-0 font-weight-bold">Upload</h6>        
           </div>
 
 
