@@ -46,14 +46,14 @@ body {
 
 .dropArea {
   position: relative;
-  outline: 2px dashed #92b0b3;
+  outline: 2px dashed #bebebe;
   padding: 45px 30px;
   height: 110px;
   text-align: center;
 }
 
 .dropArea.dropAreaRefreshAnimation {
-  outline: 2px dashed #92b0b3;
+  outline: 2px dashed #bebebe;
   outline-offset: -5px;
   -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
   transition: outline-offset .15s ease-in-out, background-color .15s linear;
@@ -63,7 +63,7 @@ body {
 
 .dropArea.is-dragover {
   outline-offset: -10px;
-  outline-color: #c8dadf;
+  outline-color: #5170b5;
   background-color: #f8f9fc;
 }
 
@@ -89,7 +89,7 @@ body {
 }
 
 .fileBox+label:hover strong, .fileBox:focus+label strong {
-  color: #39bfd3;
+  color: #5170b5;
 }
 
 .fileBox:focus+label {
@@ -145,8 +145,13 @@ th {
 
 .card-header {
   background-color: #f8f9fc;
-  color: #4e76dc;
+  color: #5170b5;
   font-size: 30px;
+}
+
+#featuresSelect {
+  width: 300px;
+  margin-bottom: 5px;
 }
 
 #anomaliesTable {

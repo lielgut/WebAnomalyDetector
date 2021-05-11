@@ -88,7 +88,7 @@ function updateSelections() {
     let s = "";
     let attrs = Object.keys(loadedDetectData);
     attrs.forEach(attr => {
-        s += "<option value=\"" + attr + "\">" + attr + "</option>\n";
+        s += "<option id=\"select-" + attr + "\" value=\"" + attr + "\">" + attr + "</option>\n";
     });
     $("#featuresSelect").html(s);
 }
@@ -103,10 +103,12 @@ function updateAnomalies() {
     $("#anomaliesRows").html(s);
     Object.keys(anomalyData.anomalies).forEach(key => {
         let corrAttr = anomalyData.reason[key];
+        if (anomalyData.anomalies[key].length > 0)
+            $("#select-" + key).css("background-color", "#dc3545");
         anomalyData.anomalies[key].forEach(range => {
             for (let i = range[0]; i <= range[1]; i++) {
-                $("#" + key + i).css("background-color", "#dc3545")
-                $("#" + corrAttr + i).css("background-color", "#dc3545")
+                $("#" + key + i).css("background-color", "#dc3545");
+                $("#" + corrAttr + i).css("background-color", "#dc3545");
 
             }
         })
