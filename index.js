@@ -68,7 +68,7 @@ function createTable() {
     // adds the attribute names as columns
     let s = "";
     attrs.forEach(attr => {
-        s += "<th>" + attr + "</th>\n";        
+        s += "<th>" + attr + "</th>\n";
     });
     headers.html(s);
 
@@ -95,12 +95,22 @@ function updateSelections() {
 
 function updateAnomalies() {
     let s = "";
-    if(selectedFeature != undefined) {
+    if (selectedFeature != undefined) {
         anomalyData.anomalies[selectedFeature].forEach(range => {
-            s += "<tr><td>" + range[0] + "</td><td>" + range[1] + "</td></tr>\n";           
+            s += "<tr><td>" + range[0] + "</td><td>" + range[1] + "</td></tr>\n";
         });
     }
     $("#anomaliesRows").html(s);
+    Object.keys(anomalyData.anomalies).forEach(key => {
+        let corrAttr = anomalyData.reason[key];
+        anomalyData.anomalies[key].forEach(range => {
+            for (let i = range[0]; i <= range[1]; i++) {
+                $("#" + key + i).css("background-color", "#dc3545")
+                $("#" + corrAttr + i).css("background-color", "#dc3545")
+
+            }
+        })
+    })
 }
 
 async function readFile(file, loadedData) {
@@ -192,7 +202,7 @@ $("#detectBtn").click(() => {
 
         selectedFeature = Object.keys(loadedDetectData)[0];
         updateSelections();
-        $("#featuresSelect").val(selectedFeature);        
+        $("#featuresSelect").val(selectedFeature);
         createTable();
 
         $.ajax({
