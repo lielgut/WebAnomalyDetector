@@ -152,8 +152,11 @@ th {
 #featuresSelect {
   width: 300px;
   margin-bottom: 5px;
+  visibility: hidden;
 }
 
 #anomaliesTable {
   width: 50px;
+  visibility: hidden;
 }
+

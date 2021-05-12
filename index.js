@@ -5,6 +5,8 @@ var loadedDetectFile;
 var loadedDetectData = {};
 var anomalyData = {};
 var selectedFeature;
+var graph;
+var corGraph;
 
 // Check if the browser supports drag&drop ///////////////
 var supportsDragnDrop = function () {
@@ -66,7 +68,7 @@ function createTable() {
     let rows = $("#TableRows");
     let numRows = loadedDetectData[attrs[0]].length;
     // adds the attribute names as columns
-    let s = "";
+    let s = "<th>timestep</th>\n";
     attrs.forEach(attr => {
         s += "<th>" + attr + "</th>\n";
     });
@@ -74,7 +76,7 @@ function createTable() {
 
     s = "";
     for (let i = 0; i < numRows; i++) {
-        s = s + "<tr id=\"row" + i + "\">\n"
+        s = s + "<tr id=\"row" + i + "\">\n<td>" + i + "</td>\n";
         attrs.forEach(attr => {
             let attrData = loadedDetectData[attr];
             s += "<td id=\"" + attr + i + "\">" + attrData[i] + "</td>\n";
@@ -82,6 +84,10 @@ function createTable() {
         s += "</tr>\n";
     }
     $("#TableRows").html(s);
+    $('#DetectTable').DataTable( {
+        ordering: false,
+        searching: false
+    });
 };
 
 function updateSelections() {
@@ -93,26 +99,72 @@ function updateSelections() {
     $("#featuresSelect").html(s);
 }
 
-function updateAnomalies() {
+function updateSelectedAnomalies() {
     let s = "";
     if (selectedFeature != undefined) {
         anomalyData.anomalies[selectedFeature].forEach(range => {
             s += "<tr><td>" + range[0] + "</td><td>" + range[1] + "</td></tr>\n";
+
+            let corFeature = anomalyData.reason[selectedFeature];
+            let rangeData = loadedDetectData[selectedFeature].slice(range[0],range[1]);
+
+            if(corFeature != undefined) {
+                let corRangeData = loadedDetectData[corFeature].slice(range[0],range[1]);
+                for(let i=0; i<range[0]; i++) {
+                    rangeData.unshift(undefined);
+                    corRangeData.unshift(undefined);
+                }
+                    
+                for(let i=range[1]; i<loadedDetectData[selectedFeature].length; i++) {
+                    rangeData.push(undefined);
+                    corRangeData.push(undefined);
+                }  
+                
+                corGraph.config.data.datasets.unshift({
+                    label: 'anomalies',
+                    backgroundColor: 'rgb(255,0,0)',
+                    borderColor: 'rgb(255,0,0)',
+                    data: corRangeData,
+                    spanGaps: true,
+                    pointRadius: 0
+                });
+                corGraph.update();
+
+            } else {                
+                for(let i=0; i<range[0]; i++)
+                    rangeData.unshift(undefined);
+                for(let i=range[1]; i<loadedDetectData[selectedFeature].length; i++)
+                    rangeData.push(undefined);
+            }
+
+            graph.config.data.datasets.unshift({
+                label: 'anomalies',
+                backgroundColor: 'rgb(255,0,0)',
+                borderColor: 'rgb(255,0,0)',
+                data: rangeData,
+                spanGaps: true,
+                pointRadius: 0
+            });
         });
     }
     $("#anomaliesRows").html(s);
+    
+    graph.update();
+}
+
+function updateTableAnomalies() {
     Object.keys(anomalyData.anomalies).forEach(key => {
         let corrAttr = anomalyData.reason[key];
         if (anomalyData.anomalies[key].length > 0)
             $("#select-" + key).css("background-color", "#dc3545");
         anomalyData.anomalies[key].forEach(range => {
-            for (let i = range[0]; i <= range[1]; i++) {
+            for (let i = range[0]; i < range[1]; i++) {
                 $("#" + key + i).css("background-color", "#dc3545");
                 $("#" + corrAttr + i).css("background-color", "#dc3545");
 
             }
-        })
-    })
+        });
+    });
 }
 
 async function readFile(file, loadedData) {
@@ -197,6 +249,11 @@ $("#detectBtn").click(() => {
         alert("selected model is pending. Please wait for it to be ready.");
         return;
     }
+    if(loadedDetectFile == undefined) {
+        alert("no detection file loaded.");
+        return;
+    }
+
     loadedDetectData = {};
     readFile(loadedDetectFile, loadedDetectData).then(() => {
 
@@ -205,7 +262,9 @@ $("#detectBtn").click(() => {
         selectedFeature = Object.keys(loadedDetectData)[0];
         updateSelections();
         $("#featuresSelect").val(selectedFeature);
+        $("#featuresSelect").css('visibility','visible');
         createTable();
+        updateGraph();
 
         $.ajax({
             url: '/api/anomaly?model_id=' + selectedModelID,
@@ -214,8 +273,11 @@ $("#detectBtn").click(() => {
             contentType: 'application/json',
             success: (data) => {
                 anomalyData = data;
-                updateAnomalies();
-                alert("recieved anomaly report.");
+                updateCorGraph();
+                updateTableAnomalies();                
+                $("#anomaliesTable").css('visibility','visible');
+                updateSelectedAnomalies();
+                alert("recieved anomaly report.");                        
             },
             error: () => {
                 alert("error in uploading detect file.");
@@ -228,7 +290,9 @@ $("#detectBtn").click(() => {
 
 $("#featuresSelect").change(() => {
     selectedFeature = $("#featuresSelect").get(0).value;
-    updateAnomalies();
+    updateGraph();    
+    updateCorGraph();
+    updateSelectedAnomalies();
 });
 
 $("#trainFileInput").change((event) => {
@@ -299,3 +363,145 @@ $("#detectDropArea").on('dragover', (event) => {
 $.getJSON("/api/models", data => {
     data.forEach(model => { addModel(model); });
 });
+
+var timesteps;
+
+
+function updateGraph() {
+
+    if(graph != undefined)
+        graph.destroy();
+
+    timesteps = [];
+    for(let i=0; i<loadedDetectData[selectedFeature].length; i++) {
+        timesteps.push(i);
+    }
+
+    let data = {   
+        data: timesteps,  
+        labels: timesteps,
+        datasets: [{
+            label: selectedFeature,
+            backgroundColor: 'rgb(81, 112, 181)',
+            borderColor: 'rgb(81, 112, 181)',
+            data: loadedDetectData[selectedFeature],
+            spanGaps: true,
+            pointRadius: 0
+        }]
+    };
+
+    let miny = Math.min.apply(Math, loadedDetectData[selectedFeature]);
+    let maxy = Math.max.apply(Math, loadedDetectData[selectedFeature]);
+    if(miny == maxy) {
+        maxy += 5;
+        miny -= 5;
+    }
+    
+    let config = {
+        type: 'line',
+        data,
+        options: {
+            indexAxis: 'x',
+            normalized: true, 
+            responsive: true,
+            maintainAspectRatio: false,
+            spanGaps: true,
+            scales: {
+                x: {
+                    type: 'linear',
+                    min: 0,
+                    max: loadedDetectData[Object.keys(loadedDetectData)[0]].length
+                },
+                y: {
+                    type: 'linear',
+                    min: miny,
+                    max: maxy
+                }
+            },
+            datasets: {
+                line: {
+                    pointRadius: 0
+                }
+            },
+            elements: {
+                point: {
+                    radius: 0
+                }
+            }
+        }
+    };
+    
+    graph = new Chart(document.getElementById('graph'),config);
+
+   
+
+}
+
+
+
+function updateCorGraph() {
+
+    if(corGraph != undefined)
+            corGraph.destroy();
+
+    let corFeature = anomalyData.reason[selectedFeature];    
+
+    if(corFeature != undefined) {        
+
+        let data = {   
+            data: timesteps,  
+            labels: timesteps,
+            datasets: [{
+                label: corFeature,
+                backgroundColor: 'rgb(125, 113, 171)',
+                borderColor: 'rgb(125, 113, 171)',
+                data: loadedDetectData[corFeature],
+                spanGaps: true,
+                pointRadius: 0
+            }]
+        };
+    
+        let miny = Math.min.apply(Math, loadedDetectData[corFeature]);
+        let maxy = Math.max.apply(Math, loadedDetectData[corFeature]);
+        if(miny == maxy) {
+            miny += 5;
+            maxy -= 5;
+        }
+        
+        let config = {
+            type: 'line',
+            data,
+            options: {
+                indexAxis: 'x',
+                normalized: true, 
+                responsive: true,
+                maintainAspectRatio: false,
+                spanGaps: true,
+                scales: {
+                    x: {
+                        type: 'linear',
+                        min: 0,
+                        max: loadedDetectData[Object.keys(loadedDetectData)[0]].length
+                    },
+                    y: {
+                        type: 'linear',
+                        min: miny,
+                        max: maxy
+                    }
+                },
+                datasets: {
+                    line: {
+                        pointRadius: 0
+                    }
+                },
+                elements: {
+                    point: {
+                        radius: 0
+                    }
+                }
+            }
+        };
+        
+        corGraph = new Chart(document.getElementById('corGraph'),config);
+    }
+}
