@@ -5,14 +5,10 @@ app.use(express.urlencoded({
     extended: true,
     limit: '50mb'
 }));
-const bodyParser = require('body-parser')
-const querystring = require('querystring')
-const anomDet = require('./algorithm/AnomalyDetector.js');
-const ts = require('./algorithm/TimeSeries.js');
-const TimeSeries = ts.TimeSeries;
-const SimpleAnomalyDetector = anomDet.SimpleAnomalyDetector;
-const HybridAnomalyDetector = anomDet.HybridAnomalyDetector;
-const fs = require('fs');
+var path = require('path');
+
+const model = require('../model/model.js');
+
 const moment = require("moment");
 const mongoose = require('mongoose');
 mongoose.connect("mongodb://localhost:27017/modelsDB", { useNewUrlParser: true, useUnifiedTopology: true });
@@ -40,26 +36,28 @@ const detectorSchema = new mongoose.Schema({
 });
 const Detector = mongoose.model("Detector", detectorSchema);
 
-app.get("/", function (request, response) {
-    response.sendFile(__dirname + "/index.html");
+
+app.get("/", (request, response) => {
+    response.sendFile(path.resolve("view/index.html"));
 });
 
-app.get("/style.css", function (request, response) {
-    response.sendFile(__dirname + "/style.css");
+app.get("/style.css", (request, response) => {
+    response.sendFile(path.resolve("view/style.css"));
 });
 
-app.get("/favicon.png", function (request, response) {
-    response.sendFile(__dirname + "/favicon.png");
+app.get("/favicon.png", (request, response) => {
+    response.sendFile(path.resolve("view/favicon.png"));
 });
-app.get("/logo.svg", function (request, response) {
-    response.sendFile(__dirname + "/logo.svg");
-});
-
-app.get("/index.js", function (request, response) {
-    response.sendFile(__dirname + "/index.js");
+app.get("/logo.svg", (request, response) => {
+    response.sendFile(path.resolve("view/logo.svg"));
 });
 
-app.post("/api/model", function (request, response) {
+app.get("/index.js", (request, response) => {
+    response.sendFile(path.resolve("view/index.js"));
+});
+
+
+app.post("/api/model", (request, response) => {
 
     Model.countDocuments({}, (err, count) => {
         if (err) {
@@ -69,26 +67,15 @@ app.post("/api/model", function (request, response) {
             let data = request.body.train_data;
             let currTime = moment().format();
             let id = count + 1;
-            let model = { model_id: id, upload_time: currTime, status: 'pending' };
-            response.send(JSON.stringify(model));
-            const modelEntry = new Model(model);
+            let newModel = { model_id: id, upload_time: currTime, status: 'pending' };
+            response.send(JSON.stringify(newModel));
+            const modelEntry = new Model(newModel);
             modelEntry.save().then(() => {
-                let t = new TimeSeries(data);
+                
+                let detData = model.learnData(data,request.query.model_type);
+                detData.model_id = id;
 
-                let modelType = request.query.model_type;
-
-                let det;
-                if (modelType == 'regression') {
-                    det = new SimpleAnomalyDetector();
-                } else if (modelType == 'hybrid') {
-                    det = new HybridAnomalyDetector();
-                } else {
-                    // TODO error
-                }
-
-                det.learnNormal(t);
-                Model.updateOne({ model_id: id }, { $set: { status: 'ready' } }).then(() => {
-                    let detData = { model_id: id, cf: det.cf, threshold: det.threshold, type: modelType };
+                Model.updateOne({ model_id: id }, { $set: { status: 'ready' } }).then(() => {                
                     let detector = new Detector(detData);
                     detector.save();
                 });
@@ -98,7 +85,7 @@ app.post("/api/model", function (request, response) {
     });
 });
 
-app.get("/api/model", function (request, response) {
+app.get("/api/model", (request, response) => {
     let id = request.query.model_id;
     Model.findOne({ model_id: id }, { _id: 0, model_id: 1, upload_time: 1, status: 1 }, (err, model) => {
         if (err) {
@@ -113,7 +100,7 @@ app.get("/api/model", function (request, response) {
     });
 });
 
-app.delete("/api/model", function (request, response) {
+app.delete("/api/model", (request, response) => {
     let id = request.query.model_id;
     Model.deleteOne({ model_id: id }, (err, result) => {
         if (err) {
@@ -133,7 +120,7 @@ app.delete("/api/model", function (request, response) {
     });
 });
 
-app.get("/api/models", function (request, response) {
+app.get("/api/models", (request, response) => {
     Model.find({}, { _id: 0, model_id: 1, upload_time: 1, status: 1 }, (err, models) => {
         if (err) {
             console.log("error getting models");
@@ -143,7 +130,7 @@ app.get("/api/models", function (request, response) {
     });
 });
 
-app.post("/api/anomaly", function (request, response) {
+app.post("/api/anomaly", (request, response) => {
     let id = request.query.model_id;
 
     Detector.findOne({ model_id: id }, (err, detInfo) => {
@@ -151,22 +138,13 @@ app.post("/api/anomaly", function (request, response) {
             console.log("error getting detector " + id);
         } else {
             if (detInfo != null) {
-                Model.findOne({ model_id: id }, (err, model) => {
+                Model.findOne({ model_id: id }, (err, foundModel) => {
                     if (err) {
                         console.log("error getting model " + id);
                     } else {
-                        if (model.status == 'ready') {
-                            let data = request.body.predict_data;
-                            let t = new TimeSeries(data);
-                            let det;
-                            if (detInfo.type == 'regression') {
-                                det = new SimpleAnomalyDetector();
-                            } else if (detInfo.type == 'hybrid') {
-                                det = new HybridAnomalyDetector();
-                            }
-                            det.cf = detInfo.cf;
-                            det.threshold = detInfo.threshold;
-                            response.send(JSON.stringify(det.detect(t)));
+                        if (foundModel.status == 'ready') {
+                            let data = request.body.predict_data;                    
+                            response.send(JSON.stringify(model.detectAnomalies(data, detInfo)));
                         }
                         else {
                             response.redirect(303, '/api/model?model_id=' + id);
@@ -180,6 +158,6 @@ app.post("/api/anomaly", function (request, response) {
     });
 });
 
-app.listen(9876, function () {
+app.listen(9876, () => {
     console.log("Server started on port 9876.")
-})
+});

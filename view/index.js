@@ -59,13 +59,20 @@ function addModel(model) {
     });
 }
 
+var table;
+
 function createTable() {
+
+    if(table != undefined)
+        table.destroy();
+    $("#TableRows").html("");
+
     let attrs = Object.keys(loadedDetectData);
     if (attrs.length == 0) {
         return;
     }
     let headers = $("#TableHeaders");
-    let rows = $("#TableRows");
+
     let numRows = loadedDetectData[attrs[0]].length;
     // adds the attribute names as columns
     let s = "<th class=\"thSticky\">timestep</th>\n";
@@ -74,20 +81,21 @@ function createTable() {
     });
     headers.html(s);
 
-    s = "";
-    for (let i = 0; i < numRows; i++) {
-        s = s + "<tr id=\"row" + i + "\">\n<td>" + i + "</td>\n";
-        attrs.forEach(attr => {
-            let attrData = loadedDetectData[attr];
-            s += "<td id=\"" + attr + i + "\">" + attrData[i] + "</td>\n";
-        });
-        s += "</tr>\n";
-    }
-    $("#TableRows").html(s);
-    $('#DetectTable').DataTable( {
+    table = $('#DetectTable').DataTable( {
         ordering: false,
         searching: false
     });
+
+    for (let i = 0; i < numRows; i++) {
+        let curRow = [];
+        curRow.push(i);
+        attrs.forEach(attr => {
+            curRow.push(loadedDetectData[attr][i]);
+        });
+        table.row.add(curRow);
+    }
+    
+    table.draw();
 };
 
 function updateSelections() {
@@ -157,17 +165,22 @@ function updateSelectedAnomalies() {
 }
 
 function updateTableAnomalies() {
-    Object.keys(anomalyData.anomalies).forEach(key => {
-        let corrAttr = anomalyData.reason[key];
-        if (anomalyData.anomalies[key].length > 0)
-            $("#select-" + key).css("background-color", "#dc3545");
-        anomalyData.anomalies[key].forEach(range => {
-            for (let i = range[0]; i < range[1]; i++) {
-                $("#" + key + i).css("background-color", "#dc3545");
-                $("#" + corrAttr + i).css("background-color", "#dc3545");
+    let attrs = Object.keys(loadedDetectData);
 
-            }
-        });
+    Object.keys(anomalyData.anomalies).forEach(key => {
+        let corAttr = anomalyData.reason[key];
+        if(corAttr != undefined) {
+            let keyindex = attrs.findIndex((attr) => attr == key);
+            let corKeyIndex = attrs.findIndex((attr) => attr == corAttr);
+            if (anomalyData.anomalies[key].length > 0)
+                $("#select-" + key).css("background-color", "#dc3545");
+                anomalyData.anomalies[key].forEach(range => {
+                for (let i = range[0]; i < range[1]; i++) {
+                    $(table.cell(i,keyindex + 1).node()).css("background-color", "#dc3545");
+                    $(table.cell(i,corKeyIndex + 1).node()).css("background-color", "#dc3545");
+                }
+            });
+        }
     });
 }
 
@@ -267,6 +280,7 @@ $("#detectBtn").click(() => {
         updateSelections();
         $("#featuresSelect").val(selectedFeature);
         $("#featuresSelect").css('visibility','visible');
+
         createTable();
         updateGraph();
 
@@ -299,12 +313,16 @@ $("#featuresSelect").change(() => {
 });
 
 $("#trainFileInput").change((event) => {
+    if(event.target.files.length == 0)
+        return;
     loadedTrainFile = event.target.files[0];
     // change label to show file name
     $("#trainFileLabel").text(loadedTrainFile.name);
 });
 
 $("#detectFileInput").change((event) => {
+    if(event.target.files.length == 0)
+        return;
     loadedDetectFile = event.target.files[0];
     // change label to show file name
     $("#detectFileLabel").text(loadedDetectFile.name);
