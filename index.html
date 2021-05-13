@@ -30,30 +30,37 @@
           </div>
 
 
-          <div class="card-body">
+          <div class="card-body scrollable">
 
-            <select id="featuresSelect" class="form-select">
-            </select>
-
-            <table id="anomaliesTable" class="table table-hover table-sm">
-              <thead>
-                <tr class="headers">
-                  <th>start</th>
-                  <th>end</th>
-                </tr>
-              </thead>
-              <tbody id="anomaliesRows">
-              </tbody>
-            </table>
-
+            <div class="row">
+              <select id="featuresSelect" class="form-select">
+              </select>
+            </div>
             
-            <div>
-              <canvas id="graph"></canvas>
+            <div class="row">
+              <div class="col-lg-2 col-md-12" id="anomaliesCol">
+                <table id="anomaliesTable" class="table table-hover table-sm">
+                  <thead>
+                    <tr class="headers">
+                      <th>start</th>
+                      <th>end</th>
+                    </tr>
+                  </thead>
+                  <tbody id="anomaliesRows">
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-lg-5 col-md-12">
+                <div>
+                  <canvas id="graph" height="250"></canvas>
+                </div>
+              </div>
+              <div class="col-lg-5 col-md-12" id="corGraphCol">
+                <div>
+                  <canvas id="corGraph" height="250"></canvas>
+                </div>
+              </div>
             </div>
-            <div>
-              <canvas id="corGraph"></canvas>
-            </div>
-                      
 
           </div>
 
@@ -76,10 +83,10 @@
             <table id="modelTable" class="table table-hover table-sm">
               <thead>
                 <tr class="headers">
-                  <th></th>
-                  <th>id</th>
-                  <th>status</th>
-                  <th></th>
+                  <th class="thSticky"></th>
+                  <th class="thSticky">id</th>
+                  <th class="thSticky">status</th>
+                  <th class="thSticky"></th>
                 </tr>
               </thead>
               <tbody id="modelTableBody">

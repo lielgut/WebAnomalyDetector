@@ -68,9 +68,9 @@ function createTable() {
     let rows = $("#TableRows");
     let numRows = loadedDetectData[attrs[0]].length;
     // adds the attribute names as columns
-    let s = "<th>timestep</th>\n";
+    let s = "<th class=\"thSticky\">timestep</th>\n";
     attrs.forEach(attr => {
-        s += "<th>" + attr + "</th>\n";
+        s += "<th class=\"thSticky\">" + attr + "</th>\n";
     });
     headers.html(s);
 

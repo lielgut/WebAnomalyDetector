@@ -128,7 +128,7 @@ tr.headers th {
   background: #fff;
 }
 
-th {
+.thSticky {
   position: sticky;
   top: 0;
   box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
@@ -152,7 +152,8 @@ th {
 #featuresSelect {
   width: 300px;
   height: 35px;
-  margin-bottom: 5px;
+  margin-left: 15px;
+  margin-bottom: 15px;
   visibility: hidden;
 }
 
@@ -160,4 +161,3 @@ th {
   width: 50px;
   visibility: hidden;
 }
-
