@@ -100,56 +100,60 @@ function updateSelections() {
 }
 
 function updateSelectedAnomalies() {
+    
     let s = "";
     if (selectedFeature != undefined) {
-        anomalyData.anomalies[selectedFeature].forEach(range => {
-            s += "<tr><td>" + range[0] + "</td><td>" + range[1] + "</td></tr>\n";
 
-            let corFeature = anomalyData.reason[selectedFeature];
-            let rangeData = loadedDetectData[selectedFeature].slice(range[0],range[1]);
+        let anomalyGraphData = [];
 
-            if(corFeature != undefined) {
-                let corRangeData = loadedDetectData[corFeature].slice(range[0],range[1]);
-                for(let i=0; i<range[0]; i++) {
-                    rangeData.unshift(undefined);
-                    corRangeData.unshift(undefined);
+        let corFeature = anomalyData.reason[selectedFeature];
+        let selectedData = loadedDetectData[selectedFeature];  
+        let i = 0;
+
+        if(corFeature != undefined) {
+
+            $("#anomaliesTable").css('visibility','visible');
+
+            let corAnomalyGraphData = [];
+            let corSelectedData = loadedDetectData[corFeature];
+
+            anomalyData.anomalies[selectedFeature].forEach(range => {
+                s += "<tr><td>" + range[0] + "</td><td>" + range[1] + "</td></tr>\n";                
+                      
+                for(; i < range[0]; i++) {
+                    anomalyGraphData.push(undefined);
+                    corAnomalyGraphData.push(undefined);
                 }
-                    
-                for(let i=range[1]; i<loadedDetectData[selectedFeature].length; i++) {
-                    rangeData.push(undefined);
-                    corRangeData.push(undefined);
+                for(; i < range[1]; i++) {
+                    anomalyGraphData.push(selectedData[i]);      
+                    corAnomalyGraphData.push(corSelectedData[i]);
                 }  
-                
-                corGraph.config.data.datasets.unshift({
-                    label: 'anomalies',
-                    backgroundColor: 'rgb(255,0,0)',
-                    borderColor: 'rgb(255,0,0)',
-                    data: corRangeData,
-                    spanGaps: true,
-                    pointRadius: 0
-                });
-                corGraph.update();
-
-            } else {                
-                for(let i=0; i<range[0]; i++)
-                    rangeData.unshift(undefined);
-                for(let i=range[1]; i<loadedDetectData[selectedFeature].length; i++)
-                    rangeData.push(undefined);
-            }
+            });  
 
             graph.config.data.datasets.unshift({
                 label: 'anomalies',
                 backgroundColor: 'rgb(255,0,0)',
                 borderColor: 'rgb(255,0,0)',
-                data: rangeData,
-                spanGaps: true,
+                data: anomalyGraphData,
+                spanGaps: false,
                 pointRadius: 0
             });
-        });
+            graph.update();
+            
+            corGraph.config.data.datasets.unshift({
+                label: 'anomalies',
+                backgroundColor: 'rgb(255,0,0)',
+                borderColor: 'rgb(255,0,0)',
+                data: corAnomalyGraphData,
+                spanGaps: false,
+                pointRadius: 0
+            });
+            corGraph.update();            
+        } else {
+            $("#anomaliesTable").css('visibility','hidden');
+        }
     }
-    $("#anomaliesRows").html(s);
-    
-    graph.update();
+    $("#anomaliesRows").html(s);    
 }
 
 function updateTableAnomalies() {
@@ -275,7 +279,6 @@ $("#detectBtn").click(() => {
                 anomalyData = data;
                 updateCorGraph();
                 updateTableAnomalies();                
-                $("#anomaliesTable").css('visibility','visible');
                 updateSelectedAnomalies();
                 alert("recieved anomaly report.");                        
             },
@@ -432,8 +435,6 @@ function updateGraph() {
     };
     
     graph = new Chart(document.getElementById('graph'),config);
-
-   
 
 }
 

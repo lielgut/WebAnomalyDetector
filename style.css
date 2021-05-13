@@ -151,6 +151,7 @@ th {
 
 #featuresSelect {
   width: 300px;
+  height: 35px;
   margin-bottom: 5px;
   visibility: hidden;
 }
