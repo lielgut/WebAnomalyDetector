@@ -120,7 +120,22 @@ function updateSelectedAnomalies() {
 
         if(corFeature != undefined) {
 
-            $("#anomaliesTable").css('visibility','visible');
+            if($("#anomaliesCol").length == 0) {
+                $("#graphs-row").append("\
+                <div class=\"col-lg-2 col-md-12\" id=\"anomaliesCol\">\
+                    <table id=\"anomaliesTable\" class=\"table table-hover table-bordered table-sm\">\
+                    <thead>\
+                        <tr class=\"headers\">\
+                        <th>start</th>\
+                        <th>end</th>\
+                        </tr>\
+                    </thead>\
+                    <tbody id=\"anomaliesRows\">\
+                    </tbody>\
+                    </table>\
+                </div>\
+                ");
+            }            
 
             let corAnomalyGraphData = [];
             let corSelectedData = loadedDetectData[corFeature];
@@ -157,8 +172,8 @@ function updateSelectedAnomalies() {
                 pointRadius: 0
             });
             corGraph.update();            
-        } else {
-            $("#anomaliesTable").css('visibility','hidden');
+        } else {  
+            $("#anomaliesCol").remove();        
         }
     }
     $("#anomaliesRows").html(s);    
@@ -308,6 +323,7 @@ $("#detectBtn").click(() => {
 $("#featuresSelect").change(() => {
     selectedFeature = $("#featuresSelect").get(0).value;
     updateGraph();    
+    $("#graph-card-body").addClass("scrollable");
     updateCorGraph();
     updateSelectedAnomalies();
 });

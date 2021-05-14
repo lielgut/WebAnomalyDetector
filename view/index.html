@@ -30,26 +30,14 @@
           </div>
 
 
-          <div class="card-body scrollable">
+          <div class="card-body" id="graph-card-body">
 
             <div class="row">
               <select id="featuresSelect" class="form-select">
               </select>
             </div>
             
-            <div class="row">
-              <div class="col-lg-2 col-md-12" id="anomaliesCol">
-                <table id="anomaliesTable" class="table table-hover table-sm">
-                  <thead>
-                    <tr class="headers">
-                      <th>start</th>
-                      <th>end</th>
-                    </tr>
-                  </thead>
-                  <tbody id="anomaliesRows">
-                  </tbody>
-                </table>
-              </div>
+            <div class="row" id="graphs-row">
               <div class="col-lg-5 col-md-12">
                 <div>
                   <canvas id="graph" height="250"></canvas>
@@ -156,7 +144,7 @@
               <label for="hybridSelect">hybrid</label>
             </div>
             <div class="btnDiv">
-              <button type="button" class="btn btn-info btn-sm" id="trainBtn">train</button>
+              <button type="button" class="btn btn-sm" id="trainBtn">train</button>
             </div>
             <div id="detectDropArea" class="dropArea">
               <input type="file" id="detectFileInput" class="fileBox" accept=".csv">
@@ -164,7 +152,7 @@
                   here.</span></label>
             </div>
             <div class="btnDiv">
-              <button type="button" class="btn btn-danger btn-sm" id="detectBtn">detect</button>
+              <button type="button" class="btn btn-sm" id="detectBtn">detect</button>
             </div>
           </div>
 

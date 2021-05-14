@@ -38,22 +38,22 @@ const Detector = mongoose.model("Detector", detectorSchema);
 
 
 app.get("/", (request, response) => {
-    response.sendFile(path.resolve("view/index.html"));
+    response.sendFile(path.resolve("../view/index.html"));
 });
 
 app.get("/style.css", (request, response) => {
-    response.sendFile(path.resolve("view/style.css"));
+    response.sendFile(path.resolve("../view/style.css"));
 });
 
 app.get("/favicon.png", (request, response) => {
-    response.sendFile(path.resolve("view/favicon.png"));
+    response.sendFile(path.resolve("../view/favicon.png"));
 });
 app.get("/logo.svg", (request, response) => {
-    response.sendFile(path.resolve("view/logo.svg"));
+    response.sendFile(path.resolve("../view/logo.svg"));
 });
 
 app.get("/index.js", (request, response) => {
-    response.sendFile(path.resolve("view/index.js"));
+    response.sendFile(path.resolve("../view/index.js"));
 });
 
 

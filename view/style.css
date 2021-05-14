@@ -120,8 +120,15 @@ body {
   padding-right: 0px;
 }
 
-#trainBtn {
+#trainBtn, #detectBtn{
+  background-color: #5170b5;
+  border-color: #5170b5;
   color: white;
+}
+
+#trainBtn:hover, #detectBtn:hover {
+  background-color: #e3e6f0;
+  color: #5170b5;
 }
 
 tr.headers th {
@@ -159,5 +166,5 @@ tr.headers th {
 
 #anomaliesTable {
   width: 50px;
-  visibility: hidden;
+  /* visibility: hidden; */
 }
