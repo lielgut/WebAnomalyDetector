@@ -75,6 +75,7 @@ http://localhost:9876/
 
 Drag a CSV file for training a new model, choose the model type and click "train" to upload the new model.
 Then drag a CSV file for anomaly detection and click "detect". The data loaded from the file can be viewed in the graph or data table. When the server responds with the anomalies, these will be highlighted. Select a feature from the selection box to view its graph and anomaly ranges if such exist.
+The CSV files must have column names in the first row of the file.
 
 ## Additional information
 - [User stories video]()
