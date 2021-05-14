@@ -1,0 +1,26 @@
+{
+  "name": "ex2",
+  "version": "1.0.0",
+  "description": "<p align=\"center\"> <img src=\"view/logo.svg\" alt=\"Logo\" height=\"50\"> </p>",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lielgut/WebAnomalyDetector.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lielgut/WebAnomalyDetector/issues"
+  },
+  "homepage": "https://github.com/lielgut/WebAnomalyDetector#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "moment": "^2.29.1",
+    "mongoose": "^5.12.9",
+    "smallest-enclosing-circle": "^1.0.2"
+  }
+}
