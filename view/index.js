@@ -32,10 +32,10 @@ function removeModel(id) {
         type: 'DELETE',
         success: () => {
             $("#tr" + id).remove();
-            alert("model " + id + " deleted succesfuly.");
+            alertify.success("model " + id + " deleted succesfuly.");
         },
         error: () => {
-            alert("error in deleting model");
+            alertify.error("error in deleting model");
         }
     });
 }
@@ -63,7 +63,7 @@ var table;
 
 function createTable() {
 
-    if(table != undefined)
+    if (table != undefined)
         table.destroy();
     $("#TableRows").html("");
 
@@ -81,7 +81,7 @@ function createTable() {
     });
     headers.html(s);
 
-    table = $('#DetectTable').DataTable( {
+    table = $('#DetectTable').DataTable({
         ordering: false,
         searching: false
     });
@@ -94,7 +94,7 @@ function createTable() {
         });
         table.row.add(curRow);
     }
-    
+
     table.draw();
 };
 
@@ -108,19 +108,19 @@ function updateSelections() {
 }
 
 function updateSelectedAnomalies() {
-    
+
     let s = "";
     if (selectedFeature != undefined) {
 
         let anomalyGraphData = [];
 
         let corFeature = anomalyData.reason[selectedFeature];
-        let selectedData = loadedDetectData[selectedFeature];  
+        let selectedData = loadedDetectData[selectedFeature];
         let i = 0;
 
-        if(corFeature != undefined) {
+        if (corFeature != undefined) {
 
-            if($("#anomaliesCol").length == 0) {
+            if ($("#anomaliesCol").length == 0) {
                 $("#graphs-row").append("\
                 <div class=\"col-lg-2 col-md-12\" id=\"anomaliesCol\">\
                     <table id=\"anomaliesTable\" class=\"table table-hover table-bordered table-sm\">\
@@ -135,23 +135,23 @@ function updateSelectedAnomalies() {
                     </table>\
                 </div>\
                 ");
-            }            
+            }
 
             let corAnomalyGraphData = [];
             let corSelectedData = loadedDetectData[corFeature];
 
             anomalyData.anomalies[selectedFeature].forEach(range => {
-                s += "<tr><td>" + range[0] + "</td><td>" + range[1] + "</td></tr>\n";                
-                      
-                for(; i < range[0]; i++) {
+                s += "<tr><td>" + range[0] + "</td><td>" + range[1] + "</td></tr>\n";
+
+                for (; i < range[0]; i++) {
                     anomalyGraphData.push(undefined);
                     corAnomalyGraphData.push(undefined);
                 }
-                for(; i < range[1]; i++) {
-                    anomalyGraphData.push(selectedData[i]);      
+                for (; i < range[1]; i++) {
+                    anomalyGraphData.push(selectedData[i]);
                     corAnomalyGraphData.push(corSelectedData[i]);
-                }  
-            });  
+                }
+            });
 
             graph.config.data.datasets.unshift({
                 label: 'anomalies',
@@ -162,7 +162,7 @@ function updateSelectedAnomalies() {
                 pointRadius: 0
             });
             graph.update();
-            
+
             corGraph.config.data.datasets.unshift({
                 label: 'anomalies',
                 backgroundColor: 'rgb(255,0,0)',
@@ -171,12 +171,12 @@ function updateSelectedAnomalies() {
                 spanGaps: false,
                 pointRadius: 0
             });
-            corGraph.update();            
-        } else {  
-            $("#anomaliesCol").remove();        
+            corGraph.update();
+        } else {
+            $("#anomaliesCol").remove();
         }
     }
-    $("#anomaliesRows").html(s);    
+    $("#anomaliesRows").html(s);
 }
 
 function updateTableAnomalies() {
@@ -184,15 +184,15 @@ function updateTableAnomalies() {
 
     Object.keys(anomalyData.anomalies).forEach(key => {
         let corAttr = anomalyData.reason[key];
-        if(corAttr != undefined) {
+        if (corAttr != undefined) {
             let keyindex = attrs.findIndex((attr) => attr == key);
             let corKeyIndex = attrs.findIndex((attr) => attr == corAttr);
             if (anomalyData.anomalies[key].length > 0)
                 $("#select-" + key).css("background-color", "#dc3545");
-                anomalyData.anomalies[key].forEach(range => {
+            anomalyData.anomalies[key].forEach(range => {
                 for (let i = range[0]; i < range[1]; i++) {
-                    $(table.cell(i,keyindex + 1).node()).css("background-color", "#dc3545");
-                    $(table.cell(i,corKeyIndex + 1).node()).css("background-color", "#dc3545");
+                    $(table.cell(i, keyindex + 1).node()).css("background-color", "#dc3545");
+                    $(table.cell(i, corKeyIndex + 1).node()).css("background-color", "#dc3545");
                 }
             });
         }
@@ -230,11 +230,11 @@ $("#hybridSelect").click(() => {
 
 $("#trainBtn").click(() => {
     if (modelType == undefined) {
-        alert("no model type selected. Please choose one.");
+        alertify.error("no model type selected. Please choose one.");
         return;
     }
     if (loadedTrainFile == undefined) {
-        alert("no file loaded. Please upload a CSV file.");
+        alertify.error("no file loaded. Please upload a CSV file.");
         return;
     }
     let loadedTrainData = {};
@@ -250,7 +250,7 @@ $("#trainBtn").click(() => {
             success: (model) => {
 
                 addModel(model);
-                alert("model uploaded succesfully");
+                alertify.success("model uploaded succesfully");
 
                 let interval;
                 interval = setInterval(() => {
@@ -263,7 +263,7 @@ $("#trainBtn").click(() => {
                 }, 3000);
             },
             error: () => {
-                alert("error in uploading model");
+                alertify.error("error in uploading model");
             },
             data: JSON.stringify(body)
         });
@@ -274,15 +274,15 @@ $("#trainBtn").click(() => {
 $("#detectBtn").click(() => {
 
     if (selectedModelID == undefined) {
-        alert("no models loaded. Please upload a train file.");
+        alertify.error("no models loaded. Please upload a train file.");
         return;
     }
     if ($("#status" + selectedModelID).html() == "pending") {
-        alert("selected model is pending. Please wait for it to be ready.");
+        alertify.notify("selected model is pending. Please wait for it to be ready.");
         return;
     }
-    if(loadedDetectFile == undefined) {
-        alert("no detection file loaded.");
+    if (loadedDetectFile == undefined) {
+        alertify.error("no detection file loaded.");
         return;
     }
 
@@ -294,7 +294,7 @@ $("#detectBtn").click(() => {
         selectedFeature = Object.keys(loadedDetectData)[0];
         updateSelections();
         $("#featuresSelect").val(selectedFeature);
-        $("#featuresSelect").css('visibility','visible');
+        $("#featuresSelect").css('visibility', 'visible');
 
         createTable();
         updateGraph();
@@ -307,12 +307,12 @@ $("#detectBtn").click(() => {
             success: (data) => {
                 anomalyData = data;
                 updateCorGraph();
-                updateTableAnomalies();                
+                updateTableAnomalies();
                 updateSelectedAnomalies();
-                alert("recieved anomaly report.");                        
+                alertify.success("recieved anomaly report.");
             },
             error: () => {
-                alert("error in uploading detect file.");
+                alertify.error("error in uploading detect file.");
             },
             data: JSON.stringify(body)
         });
@@ -322,14 +322,14 @@ $("#detectBtn").click(() => {
 
 $("#featuresSelect").change(() => {
     selectedFeature = $("#featuresSelect").get(0).value;
-    updateGraph();    
+    updateGraph();
     $("#graph-card-body").addClass("scrollable");
     updateCorGraph();
     updateSelectedAnomalies();
 });
 
 $("#trainFileInput").change((event) => {
-    if(event.target.files.length == 0)
+    if (event.target.files.length == 0)
         return;
     loadedTrainFile = event.target.files[0];
     // change label to show file name
@@ -337,7 +337,7 @@ $("#trainFileInput").change((event) => {
 });
 
 $("#detectFileInput").change((event) => {
-    if(event.target.files.length == 0)
+    if (event.target.files.length == 0)
         return;
     loadedDetectFile = event.target.files[0];
     // change label to show file name
@@ -367,7 +367,7 @@ $("#trainDropArea").on('dragover', (event) => {
         $("#trainFileLabel").text(file.name);
     }
     else {
-        alert("Only CSV files are allowed.");
+        alertify.error("Only CSV files are allowed.");
     }
 });
 
@@ -393,7 +393,7 @@ $("#detectDropArea").on('dragover', (event) => {
         $("#detectFileLabel").text(file.name);
     }
     else {
-        alert("Only CSV files are allowed.");
+        alertify.error("Only CSV files are allowed.");
     }
 });
 
@@ -406,16 +406,16 @@ var timesteps;
 
 function updateGraph() {
 
-    if(graph != undefined)
+    if (graph != undefined)
         graph.destroy();
 
     timesteps = [];
-    for(let i=0; i<loadedDetectData[selectedFeature].length; i++) {
+    for (let i = 0; i < loadedDetectData[selectedFeature].length; i++) {
         timesteps.push(i);
     }
 
-    let data = {   
-        data: timesteps,  
+    let data = {
+        data: timesteps,
         labels: timesteps,
         datasets: [{
             label: selectedFeature,
@@ -429,17 +429,17 @@ function updateGraph() {
 
     let miny = Math.min.apply(Math, loadedDetectData[selectedFeature]);
     let maxy = Math.max.apply(Math, loadedDetectData[selectedFeature]);
-    if(miny == maxy) {
+    if (miny == maxy) {
         maxy += 5;
         miny -= 5;
     }
-    
+
     let config = {
         type: 'line',
         data,
         options: {
             indexAxis: 'x',
-            normalized: true, 
+            normalized: true,
             responsive: true,
             maintainAspectRatio: false,
             spanGaps: true,
@@ -467,8 +467,8 @@ function updateGraph() {
             }
         }
     };
-    
-    graph = new Chart(document.getElementById('graph'),config);
+
+    graph = new Chart(document.getElementById('graph'), config);
 
 }
 
@@ -476,15 +476,15 @@ function updateGraph() {
 
 function updateCorGraph() {
 
-    if(corGraph != undefined)
-            corGraph.destroy();
+    if (corGraph != undefined)
+        corGraph.destroy();
 
-    let corFeature = anomalyData.reason[selectedFeature];    
+    let corFeature = anomalyData.reason[selectedFeature];
 
-    if(corFeature != undefined) {        
+    if (corFeature != undefined) {
 
-        let data = {   
-            data: timesteps,  
+        let data = {
+            data: timesteps,
             labels: timesteps,
             datasets: [{
                 label: corFeature,
@@ -495,20 +495,20 @@ function updateCorGraph() {
                 pointRadius: 0
             }]
         };
-    
+
         let miny = Math.min.apply(Math, loadedDetectData[corFeature]);
         let maxy = Math.max.apply(Math, loadedDetectData[corFeature]);
-        if(miny == maxy) {
+        if (miny == maxy) {
             miny += 5;
             maxy -= 5;
         }
-        
+
         let config = {
             type: 'line',
             data,
             options: {
                 indexAxis: 'x',
-                normalized: true, 
+                normalized: true,
                 responsive: true,
                 maintainAspectRatio: false,
                 spanGaps: true,
@@ -536,7 +536,7 @@ function updateCorGraph() {
                 }
             }
         };
-        
-        corGraph = new Chart(document.getElementById('corGraph'),config);
+
+        corGraph = new Chart(document.getElementById('corGraph'), config);
     }
 }

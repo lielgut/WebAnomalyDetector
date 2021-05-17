@@ -44,6 +44,15 @@ app.get("/", (request, response) => {
 app.get("/style.css", (request, response) => {
     response.sendFile(path.resolve("../view/style.css"));
 });
+app.get("/alertify.css", (request, response) => {
+    response.sendFile(path.resolve("../view/alertifyjs/css/alertify.css"));
+});
+app.get("/default.css", (request, response) => {
+    response.sendFile(path.resolve("../view/alertifyjs/css/default.css"));
+});
+app.get("/alertify.js", (request, response) => {
+    response.sendFile(path.resolve("../view/alertifyjs/alertify.js"));
+});
 
 app.get("/favicon.png", (request, response) => {
     response.sendFile(path.resolve("../view/favicon.png"));
@@ -71,11 +80,11 @@ app.post("/api/model", (request, response) => {
             response.send(JSON.stringify(newModel));
             const modelEntry = new Model(newModel);
             modelEntry.save().then(() => {
-                
-                let detData = model.learnData(data,request.query.model_type);
+
+                let detData = model.learnData(data, request.query.model_type);
                 detData.model_id = id;
 
-                Model.updateOne({ model_id: id }, { $set: { status: 'ready' } }).then(() => {                
+                Model.updateOne({ model_id: id }, { $set: { status: 'ready' } }).then(() => {
                     let detector = new Detector(detData);
                     detector.save();
                 });
@@ -143,7 +152,7 @@ app.post("/api/anomaly", (request, response) => {
                         console.log("error getting model " + id);
                     } else {
                         if (foundModel.status == 'ready') {
-                            let data = request.body.predict_data;                    
+                            let data = request.body.predict_data;
                             response.send(JSON.stringify(model.detectAnomalies(data, detInfo)));
                         }
                         else {
