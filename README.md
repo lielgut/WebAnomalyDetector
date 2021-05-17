@@ -33,6 +33,7 @@ The project files include the following:
 front-end:
 - [Bootstrap](https://getbootstrap.com/) v5.0.0
 - [ChartsJS](https://www.chartjs.org/) v2.0
+- [AlertifyJS](https://github.com/MohammadYounes/AlertifyJS) v1.13.1
 - [jQuery](https://jquery.com/) v3.6.0
 - [DataTables](https://datatables.net/) v1.10.24
 - [Google Fonts](https://fonts.google.com/)
