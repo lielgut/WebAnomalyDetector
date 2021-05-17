@@ -2,7 +2,7 @@
 <img src="view/logo.svg" alt="Logo" height="50">
 </p>
 
-![forthebadge](https://img.shields.io/badge/Made%20with-Javascript-blue)
+![forthebadge](https://img.shields.io/badge/Made%20with-Javascript-yellow)
 
 ## About
 
