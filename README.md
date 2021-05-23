@@ -81,4 +81,4 @@ Then drag a CSV file for anomaly detection and click "detect". The data loaded f
 The CSV files must have column names in the first row of the file.
 
 ## Additional information
-- [User stories video]()
+- [User stories video](https://youtu.be/DUeRqOofiUA)
