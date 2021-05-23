@@ -24,6 +24,8 @@ The project files include the following:
 - The <b>Model</b> folder includes JS files with the anomaly detection algorithms. The model.js file is used by the server to learn correlations and detect the anomalies. The code written in these files is based on Dr. Eliahu Khalastchi's C++ code for these algorithms, with several changes made.
 - The <b>Controller</b> folder includes the server.js file, made with node.js. Express is used for running the server and implementing the REST API. Mongoose is used for interacting with the MongoDB database.
 
+<img src="diagram.svg" alt="diagram" height="400">
+
 ## Dependencies
 - [Node.js](https://nodejs.org/) is required for running the server.
 - [MongoDB Community Server](https://www.mongodb.com/try/download/community) is required for creating the database which is hosted locally and used by the server.
